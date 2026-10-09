@@ -1,0 +1,86 @@
+.filterGroup {
+  display: flex;
+  gap: var(--space-8);
+  margin-right: var(--space-16);
+  flex-wrap: wrap;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-16);
+  height: 100%;
+}
+
+.dayCard {
+  padding: var(--space-16);
+  min-height: 400px;
+}
+
+.dayTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: var(--space-16);
+}
+
+.classList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.classBlock {
+  border-radius: var(--radius-8);
+  padding: var(--space-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.classBlock:hover {
+  transform: translateY(-2px);
+}
+
+.className {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.classTime, .classRoom {
+  font-size: 13px;
+}
+
+/* Color Themes (background opacity 13%, text full color) */
+.theme-0 {
+  background-color: color-mix(in srgb, var(--tint-blue) 13%, transparent);
+  color: var(--tint-blue);
+}
+.theme-1 {
+  background-color: color-mix(in srgb, var(--tint-green) 13%, transparent);
+  color: var(--tint-green);
+}
+.theme-2 {
+  background-color: color-mix(in srgb, var(--tint-orange) 13%, transparent);
+  color: var(--tint-orange);
+}
+.theme-3 {
+  background-color: color-mix(in srgb, var(--tint-purple) 13%, transparent);
+  color: var(--tint-purple);
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .dayCard {
+    min-height: auto;
+  }
+}

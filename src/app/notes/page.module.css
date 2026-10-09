@@ -1,0 +1,129 @@
+.layout {
+  display: flex;
+  gap: var(--space-32);
+  align-items: flex-start;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-12);
+  padding: var(--space-20);
+  flex-shrink: 0;
+}
+
+.folderList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.folderItem {
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-8);
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.folderItem:hover {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.active {
+  background-color: var(--nav-active);
+  color: var(--text);
+}
+
+.addFolder {
+  margin-top: var(--space-12);
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-8);
+  border: 1px dashed var(--border-input);
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.addFolder:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+.notesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-16);
+}
+
+.noteCard {
+  min-height: 170px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.noteCard:hover {
+  border-color: var(--border-input);
+  transform: translateY(-2px);
+}
+
+.noteHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-16);
+}
+
+.previewLines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  flex: 1;
+}
+
+.previewLine {
+  height: 10px;
+  background-color: var(--skeleton);
+  border-radius: var(--radius-full);
+}
+
+.noteFooter {
+  margin-top: var(--space-16);
+}
+
+@media (max-width: 1024px) {
+  .notesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+  }
+  .notesGrid {
+    grid-template-columns: 1fr;
+  }
+}

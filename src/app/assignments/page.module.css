@@ -1,0 +1,63 @@
+.filterGroup {
+  display: flex;
+  gap: var(--space-8);
+  margin-right: var(--space-16);
+  flex-wrap: wrap;
+}
+
+.kanbanBoard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-24);
+  height: 100%;
+}
+
+.column {
+  background-color: var(--surface);
+  border-radius: var(--radius-12);
+  padding: var(--space-20);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.columnTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: var(--space-20);
+}
+
+.cardList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.assignmentCard {
+  background-color: var(--bg);
+  border-radius: var(--radius-8);
+  padding: var(--space-16);
+  border: 1px solid var(--border-input);
+  transition: border-color 0.2s;
+  cursor: pointer;
+}
+
+.assignmentCard:hover {
+  border-color: var(--accent);
+}
+
+.cardHeader {
+  margin-bottom: var(--space-4);
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .kanbanBoard {
+    grid-template-columns: 1fr;
+  }
+}

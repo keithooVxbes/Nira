@@ -1,26 +1,123 @@
-@import "tailwindcss";
-
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Colors */
+  --bg: #0e0f12;
+  --surface: #14161b;
+  --surface-alt: #16181d;
+  --border: #22252c;
+  --border-input: #2c313a;
+  --row-divider: #1d2026;
+  --nav-active: #1a1d24;
+  --text: #e6e8ec;
+  --muted: #8b919c;
+  --pill-text: #aab0bb;
+  --accent: #7c9cff;
+  --on-accent: #0e0f12;
+  --chart-bar: #2a3550;
+  --skeleton: #22252c;
+
+  /* Class Tints */
+  --tint-blue: #7c9cff;
+  --tint-green: #5fd0b0;
+  --tint-orange: #e8a76b;
+  --tint-purple: #c08cf0;
+
+  /* Spacing */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+
+  /* Border Radius */
+  --radius-8: 8px;
+  --radius-12: 12px;
+  --radius-full: 9999px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: 13px;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Typography utilities */
+.h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.stat-number {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.text-secondary {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.text-small {
+  font-size: 12px;
+}
+
+.auth-hero {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Media Queries for Typography & Common Utilities */
+@media (max-width: 768px) {
+  .h1 {
+    font-size: 20px;
+  }
+  .stat-number {
+    font-size: 22px;
+  }
+  .auth-hero {
+    font-size: 26px;
+  }
+  :root {
+    --space-40: 24px;
+    --space-32: 20px;
+    --space-24: 16px;
+  }
 }

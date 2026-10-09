@@ -1,0 +1,31 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 var(--space-12);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-input);
+  font-size: 12px;
+  color: var(--pill-text);
+  white-space: nowrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 var(--space-16);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-input);
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.active {
+  background-color: var(--nav-active);
+  color: var(--text);
+}
