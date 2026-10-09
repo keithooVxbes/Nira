@@ -4,9 +4,22 @@ import { cookies } from 'next/headers'
 export async function createClient() {
   const cookieStore = await cookies()
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
+
+  if (!supabaseUrl) {
+    console.error('Supabase client error: NEXT_PUBLIC_SUPABASE_URL is undefined or empty')
+  } else {
+    try {
+      new URL(supabaseUrl)
+    } catch (e) {
+      console.error('Supabase client error: NEXT_PUBLIC_SUPABASE_URL is an invalid URL:', supabaseUrl)
+    }
+  }
+
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    supabaseUrl,
+    supabaseKey,
     {
       cookies: {
         getAll() {
