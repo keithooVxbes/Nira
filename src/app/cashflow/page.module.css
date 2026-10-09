@@ -186,6 +186,71 @@
   display: flex;
   gap: var(--space-8);
   flex-wrap: wrap;
+  align-items: center;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-input);
+  border: 1px solid var(--border-input);
+  border-radius: var(--radius-8);
+  padding: 6px 12px;
+  height: 38px;
+  min-width: 200px;
+}
+
+.searchInput {
+  border: none;
+  background: transparent;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 14px;
+  width: 100%;
+}
+
+.searchInput::placeholder {
+  color: var(--text-tertiary);
+}
+
+.sortSelect {
+  background: var(--surface-input);
+  border: 1px solid var(--border-input);
+  border-radius: var(--radius-8);
+  color: var(--text-primary);
+  padding: 6px 12px;
+  height: 38px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-48) var(--space-24);
+  text-align: center;
+  background: var(--surface-alt);
+  border: 1px dashed var(--border-input);
+  border-radius: var(--radius-card);
+  margin-top: var(--space-16);
+}
+
+.emptyStateTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  margin-top: 16px;
+}
+
+.emptyStateDesc {
+  font-size: 14px;
+  color: var(--text-tertiary);
 }
 
 /* Modern Transaction Cards */
@@ -210,6 +275,43 @@
   background-color: #F9F3EB;
   border-color: rgba(223, 217, 209, 0.8);
   transform: translateY(-1px);
+}
+
+.txHoverActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.txItem:hover .txHoverActions {
+  opacity: 1;
+}
+
+.txActionBtn {
+  background: var(--surface);
+  border: 1px solid var(--border-input);
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.txActionBtn:hover {
+  background: #EAE5DF;
+  color: var(--text-primary);
+}
+
+.txActionBtnDanger:hover {
+  background: #FEE2E2;
+  color: #DC2626;
+  border-color: #FCA5A5;
 }
 
 .txLeft {
@@ -318,24 +420,73 @@
 
 .subItem {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 16px;
+  flex-direction: column;
+  padding: 16px;
   background-color: var(--surface-alt);
   border: 1px solid rgba(223, 217, 209, 0.5);
   border-radius: 14px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.subItem:hover .subActions {
+  opacity: 1;
 }
 
 .subInfo {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  width: 100%;
 }
 
 .itemTitle {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
+}
+
+.subDate {
+  align-self: flex-end;
+  margin-top: 16px;
+}
+
+.subActions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.subActionBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  padding: 6px;
+  transition: all 0.2s;
+}
+
+.subActionBtn:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.subActionBtnDanger:hover {
+  background: #FEE2E2;
+  color: #DC2626;
 }
 
 @media (max-width: 1024px) {

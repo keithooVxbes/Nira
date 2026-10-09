@@ -12,7 +12,7 @@ export default function AssignmentModal({ isOpen, onClose, onSave, initialData }
     description: '',
     dueDate: '',
     priority: 'Medium',
-    status: 'To Do'
+    status: 'To do'
   });
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function AssignmentModal({ isOpen, onClose, onSave, initialData }
           description: '',
           dueDate: '',
           priority: 'Medium',
-          status: 'To Do'
+          status: 'To do'
         });
       }
     }
@@ -144,8 +144,8 @@ export default function AssignmentModal({ isOpen, onClose, onSave, initialData }
                   value={formData.status}
                   onChange={handleChange}
                 >
-                  <option value="To Do">To Do</option>
-                  <option value="In Progress">In Progress</option>
+                  <option value="To do">To do</option>
+                  <option value="In progress">In progress</option>
                   <option value="Done">Done</option>
                 </select>
               </div>

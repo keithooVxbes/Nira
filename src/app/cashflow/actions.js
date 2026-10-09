@@ -49,6 +49,10 @@ export async function createTransaction(formData) {
   const transaction_date = formData.get('transaction_date')
   const receipt = formData.get('receipt')
 
+  if (!type || !category || !description || !transaction_date || isNaN(amount)) {
+    return { error: 'Please provide all required fields.' }
+  }
+
   // Create transaction first to get the ID
   const { data: newTx, error: txError } = await supabase
     .from('transactions')
@@ -87,7 +91,7 @@ export async function createTransaction(formData) {
       .eq('id', newTx.id)
   }
 
-  revalidatePath('/cashflow')
+  revalidatePath('/', 'layout')
   return { success: true }
 }
 
@@ -130,5 +134,103 @@ export async function createSubscription(formData) {
   if (error) return { error: error.message }
 
   revalidatePath('/cashflow')
+  return { success: true }
+}
+
+export async function updateSubscription(id, formData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (!user) return { error: 'Unauthorized' }
+
+  const name = formData.get('name')
+  const amount = parseFloat(formData.get('amount'))
+  const category = formData.get('category')
+  const billing_date = formData.get('billing_date')
+
+  const { error } = await supabase
+    .from('subscriptions')
+    .update({
+      name,
+      amount,
+      category,
+      billing_date
+    })
+    .eq('id', id)
+    .eq('user_id', user.id)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/cashflow')
+  return { success: true }
+}
+
+export async function deleteSubscription(id) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (!user) return { error: 'Unauthorized' }
+
+  const { error } = await supabase
+    .from('subscriptions')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', user.id)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/cashflow')
+  return { success: true }
+}
+
+export async function updateTransaction(id, formData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (!user) return { error: 'Unauthorized' }
+
+  const type = formData.get('type')
+  const amount = parseFloat(formData.get('amount'))
+  const category = formData.get('category')
+  const description = formData.get('description')
+  const transaction_date = formData.get('transaction_date')
+
+  if (!type || !category || !description || !transaction_date || isNaN(amount)) {
+    return { error: 'Please provide all required fields.' }
+  }
+
+  const { error } = await supabase
+    .from('transactions')
+    .update({
+      type,
+      amount,
+      category,
+      description,
+      transaction_date
+    })
+    .eq('id', id)
+    .eq('user_id', user.id)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/', 'layout')
+  return { success: true }
+}
+
+export async function deleteTransaction(id) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (!user) return { error: 'Unauthorized' }
+
+  const { error } = await supabase
+    .from('transactions')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', user.id)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/', 'layout')
   return { success: true }
 }

@@ -53,21 +53,29 @@
 }
 
 /* Color Themes (background opacity 13%, text full color) */
-.theme-0 {
+.theme-blue {
   background-color: color-mix(in srgb, var(--tint-blue) 13%, transparent);
   color: var(--tint-blue);
 }
-.theme-1 {
+.theme-green {
   background-color: color-mix(in srgb, var(--tint-green) 13%, transparent);
   color: var(--tint-green);
 }
-.theme-2 {
+.theme-amber {
   background-color: color-mix(in srgb, var(--tint-orange) 13%, transparent);
   color: var(--tint-orange);
 }
-.theme-3 {
+.theme-emerald {
+  background-color: color-mix(in srgb, var(--accent-emerald) 13%, transparent);
+  color: var(--accent-emerald);
+}
+.theme-violet {
   background-color: color-mix(in srgb, var(--tint-purple) 13%, transparent);
   color: var(--tint-purple);
+}
+.theme-rose {
+  background-color: color-mix(in srgb, var(--accent-rose) 13%, transparent);
+  color: var(--accent-rose);
 }
 
 @media (max-width: 1024px) {

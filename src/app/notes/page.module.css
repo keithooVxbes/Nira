@@ -178,3 +178,47 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Note Hover Actions */
+.noteCard .noteHoverActions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: var(--shadow-sm);
+  z-index: 10;
+}
+
+.noteCard:hover .noteHoverActions {
+  opacity: 1;
+}
+
+.noteActionBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  padding: 6px;
+  transition: all 0.2s;
+}
+
+.noteActionBtn:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.noteActionBtnDanger:hover {
+  background: #FEE2E2;
+  color: #DC2626;
+}

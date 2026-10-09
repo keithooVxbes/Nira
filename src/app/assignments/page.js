@@ -1,12 +1,13 @@
 import AppShell from '@/components/layout/AppShell';
 import AssignmentsClient from './AssignmentsClient';
+import { getAssignments } from './actions';
 
-export default function Assignments() {
+export default async function Assignments() {
+  const { data: assignments } = await getAssignments();
+
   return (
     <AppShell>
-      <AssignmentsClient />
+      <AssignmentsClient initialAssignments={assignments || []} />
     </AppShell>
   );
 }
-
-

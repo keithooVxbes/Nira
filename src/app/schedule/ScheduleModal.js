@@ -4,15 +4,17 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import styles from './ScheduleModal.module.css';
 
-export default function ScheduleModal({ isOpen, onClose, onSave }) {
+const DEFAULT_TIMEZONE = "WIB";
+
+export default function ScheduleModal({ isOpen, onClose, onSave, initialData }) {
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
-    subject: '',
-    day: 'Mon',
-    startTime: '',
-    endTime: '',
+    name: '',
+    day: 'Monday',
+    start_time: '',
+    end_time: '',
     room: '',
-    theme: '0'
+    color_theme: 'blue'
   });
 
   useEffect(() => {
@@ -23,9 +25,27 @@ export default function ScheduleModal({ isOpen, onClose, onSave }) {
       window.addEventListener('keydown', handleEsc);
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setError('');
+      if (initialData) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setFormData({
+          ...initialData,
+          start_time: initialData.start_time ? initialData.start_time.slice(0, 5) : '',
+          end_time: initialData.end_time ? initialData.end_time.slice(0, 5) : ''
+        });
+      } else {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setFormData({
+          name: '',
+          day: 'Monday',
+          start_time: '',
+          end_time: '',
+          room: '',
+          color_theme: 'blue'
+        });
+      }
     }
     return () => window.removeEventListener('keydown', handleEsc);
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, initialData]);
 
   if (!isOpen) return null;
 
@@ -37,18 +57,24 @@ export default function ScheduleModal({ isOpen, onClose, onSave }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.subject.trim() || !formData.day || !formData.startTime || !formData.endTime) {
+    if (!formData.name.trim() || !formData.day || !formData.start_time || !formData.end_time) {
       setError('Please fill in all required fields.');
       return;
     }
-    onSave({ ...formData, id: Date.now() });
-    setFormData({
-      subject: '',
-      day: 'Mon',
-      startTime: '',
-      endTime: '',
-      room: '',
-      theme: '0'
+    
+    // Validate HH:mm format
+    const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+    if (!timeRegex.test(formData.start_time) || !timeRegex.test(formData.end_time)) {
+      setError('Please enter a valid time in HH:mm format.');
+      return;
+    }
+    
+    onSave({ 
+      ...formData, 
+      id: initialData ? initialData.id : Date.now(),
+      // Ensure we format as HH:mm:00 for database compatibility
+      start_time: formData.start_time.length === 5 ? `${formData.start_time}:00` : formData.start_time,
+      end_time: formData.end_time.length === 5 ? `${formData.end_time}:00` : formData.end_time
     });
     onClose();
   };
@@ -57,7 +83,7 @@ export default function ScheduleModal({ isOpen, onClose, onSave }) {
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Add Class</h2>
+          <h2 className={styles.title}>{initialData ? 'Edit Class' : 'Add Class'}</h2>
           <button className={styles.closeBtn} onClick={onClose}>
             <X size={20} strokeWidth={2.5} />
           </button>
@@ -73,10 +99,10 @@ export default function ScheduleModal({ isOpen, onClose, onSave }) {
             )}
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>Subject / Course *</label>
+              <label className={styles.label}>Name *</label>
               <Input 
-                name="subject" 
-                value={formData.subject} 
+                name="name" 
+                value={formData.name} 
                 onChange={handleChange} 
                 placeholder="E.g., Intro to Computer Science"
                 required
@@ -92,11 +118,13 @@ export default function ScheduleModal({ isOpen, onClose, onSave }) {
                   value={formData.day}
                   onChange={handleChange}
                 >
-                  <option value="Mon">Monday</option>
-                  <option value="Tue">Tuesday</option>
-                  <option value="Wed">Wednesday</option>
-                  <option value="Thu">Thursday</option>
-                  <option value="Fri">Friday</option>
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                  <option value="Saturday">Saturday</option>
+                  <option value="Sunday">Sunday</option>
                 </select>
               </div>
 
@@ -114,24 +142,34 @@ export default function ScheduleModal({ isOpen, onClose, onSave }) {
             <div style={{ display: 'flex', gap: '16px' }}>
               <div className={styles.formGroup} style={{ flex: 1 }}>
                 <label className={styles.label}>Start Time *</label>
-                <Input 
-                  type="time"
-                  name="startTime" 
-                  value={formData.startTime} 
-                  onChange={handleChange} 
-                  required
-                />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Input 
+                    type="text"
+                    name="start_time" 
+                    value={formData.start_time} 
+                    onChange={handleChange} 
+                    placeholder="HH:mm"
+                    maxLength={5}
+                    required
+                  />
+                  <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-secondary)' }}>{DEFAULT_TIMEZONE}</span>
+                </div>
               </div>
 
               <div className={styles.formGroup} style={{ flex: 1 }}>
                 <label className={styles.label}>End Time *</label>
-                <Input 
-                  type="time"
-                  name="endTime" 
-                  value={formData.endTime} 
-                  onChange={handleChange} 
-                  required
-                />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Input 
+                    type="text"
+                    name="end_time" 
+                    value={formData.end_time} 
+                    onChange={handleChange} 
+                    placeholder="HH:mm"
+                    maxLength={5}
+                    required
+                  />
+                  <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-secondary)' }}>{DEFAULT_TIMEZONE}</span>
+                </div>
               </div>
             </div>
 
@@ -139,14 +177,16 @@ export default function ScheduleModal({ isOpen, onClose, onSave }) {
               <label className={styles.label}>Color Theme</label>
               <select 
                 className={styles.select}
-                name="theme"
-                value={formData.theme}
+                name="color_theme"
+                value={formData.color_theme}
                 onChange={handleChange}
               >
-                <option value="0">Blue</option>
-                <option value="1">Green</option>
-                <option value="2">Orange/Amber</option>
-                <option value="3">Purple/Violet</option>
+                <option value="blue">Blue</option>
+                <option value="green">Green</option>
+                <option value="amber">Orange/Amber</option>
+                <option value="emerald">Emerald</option>
+                <option value="violet">Purple/Violet</option>
+                <option value="rose">Rose</option>
               </select>
             </div>
           </div>

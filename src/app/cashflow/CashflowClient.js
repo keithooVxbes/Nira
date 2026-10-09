@@ -6,16 +6,31 @@ import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import { 
   Wallet, ArrowUpRight, ArrowDownRight, Repeat, 
-  CreditCard, Paperclip, TrendingDown, RefreshCw
+  CreditCard, Paperclip, TrendingDown, RefreshCw, Plus,
+  Edit, Trash2, AlertCircle, Search, Inbox
 } from 'lucide-react';
+import Button from '@/components/ui/Button';
 import styles from './page.module.css';
 import cardStyles from '@/components/ui/Card.module.css';
-import TransactionModal from './TransactionModal';
+import TransactionModal from '@/components/cashflow/TransactionModal';
 import SubscriptionModal from './SubscriptionModal';
+import { deleteTransaction, deleteSubscription } from './actions';
 
 export default function CashflowClient({ transactions, subscriptions, hasError, txError, subError }) {
   const [chartFilter, setChartFilter] = useState('Daily');
   const [ledgerFilter, setLedgerFilter] = useState('All Records');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOrder, setSortOrder] = useState('Newest');
+  const [isTransactionOpen, setIsTransactionOpen] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState(null);
+  const [deletingTransaction, setDeletingTransaction] = useState(null);
+  
+  const [isSubModalOpen, setIsSubModalOpen] = useState(false);
+  const [editingSub, setEditingSub] = useState(null);
+  const [deletingSub, setDeletingSub] = useState(null);
+  
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   const isTxEmpty = !transactions || transactions.length === 0;
   const isSubEmpty = !subscriptions || subscriptions.length === 0;
@@ -120,15 +135,72 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
           <option>IDR (Rp) ▾</option>
         </select>
       </div>
-      <TransactionModal />
+      <Button variant="primary" onClick={() => {
+        setEditingTransaction(null);
+        setIsTransactionOpen(true);
+      }}>
+        <Plus size={16} strokeWidth={2} />
+        Transaction
+      </Button>
     </div>
   );
 
   const filteredTransactions = transactions?.filter(tx => {
-    if (ledgerFilter === 'Income') return tx.type === 'income';
-    if (ledgerFilter === 'Expenses') return tx.type === 'expense';
+    if (ledgerFilter === 'Income' && tx.type !== 'income') return false;
+    if (ledgerFilter === 'Expenses' && tx.type !== 'expense') return false;
+
+    if (searchQuery.trim() !== '') {
+      const q = searchQuery.toLowerCase();
+      const matchDesc = tx.description?.toLowerCase().includes(q);
+      const matchCat = tx.category?.toLowerCase().includes(q);
+      const matchAmount = tx.amount?.toString().includes(q);
+      if (!matchDesc && !matchCat && !matchAmount) return false;
+    }
+
     return true;
+  }).sort((a, b) => {
+    if (sortOrder === 'Newest') return new Date(b.transaction_date) - new Date(a.transaction_date);
+    if (sortOrder === 'Oldest') return new Date(a.transaction_date) - new Date(b.transaction_date);
+    if (sortOrder === 'Highest Amount') return Number(b.amount) - Number(a.amount);
+    if (sortOrder === 'Lowest Amount') return Number(a.amount) - Number(b.amount);
+    return 0;
   }) || [];
+
+  const renderEmptyState = () => {
+    if (isTxEmpty) {
+      return (
+        <div className={styles.emptyState}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: 'var(--surface-input)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-tertiary)' }}>
+            <Inbox size={24} />
+          </div>
+          <h3 className={styles.emptyStateTitle}>No transactions yet</h3>
+          <p className={styles.emptyStateDesc}>You haven't recorded any income or expenses.</p>
+        </div>
+      );
+    }
+    
+    if (searchQuery.trim() !== '') {
+      return (
+        <div className={styles.emptyState}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: 'var(--surface-input)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-tertiary)' }}>
+            <Search size={24} />
+          </div>
+          <h3 className={styles.emptyStateTitle}>No results found</h3>
+          <p className={styles.emptyStateDesc}>No transactions match "{searchQuery}"</p>
+        </div>
+      );
+    }
+    
+    return (
+      <div className={styles.emptyState}>
+        <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: 'var(--surface-input)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-tertiary)' }}>
+          <CreditCard size={24} />
+        </div>
+        <h3 className={styles.emptyStateTitle}>No {ledgerFilter.toLowerCase()} found</h3>
+        <p className={styles.emptyStateDesc}>Try selecting a different filter.</p>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -305,7 +377,9 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
               </div>
               <h2 className={styles.cardTitle}>Subscriptions Hub</h2>
             </div>
-            <SubscriptionModal />
+            <button type="button" className={styles.link} onClick={() => { setEditingSub(null); setIsSubModalOpen(true); }}>
+              + Add
+            </button>
           </div>
           
           <div style={{ marginBottom: '20px' }}>
@@ -326,7 +400,19 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
                     <div className={styles.itemTitle}>{sub.name}</div>
                     <div className="text-secondary" style={{ fontSize: '12px' }}>{Number(sub.amount).toLocaleString('en-US')} IDR/mo</div>
                   </div>
-                  <Badge variant="pill">{new Date(sub.billing_date).toLocaleDateString()}</Badge>
+                  
+                  <div className={styles.subDate}>
+                    <Badge variant="pill">{new Date(sub.billing_date).toLocaleDateString('en-GB')}</Badge>
+                  </div>
+                  
+                  <div className={styles.subActions}>
+                    <button onClick={() => { setEditingSub(sub); setIsSubModalOpen(true); }} className={styles.subActionBtn} title="Edit">
+                      <Edit size={14} />
+                    </button>
+                    <button onClick={() => setDeletingSub(sub)} className={`${styles.subActionBtn} ${styles.subActionBtnDanger}`} title="Delete">
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -344,6 +430,30 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
             <h2 className={styles.cardTitle}>Ledger Feed</h2>
           </div>
           <div className={styles.filterChips}>
+            <div className={styles.searchBox}>
+              <Search size={14} style={{ color: 'var(--text-tertiary)' }} />
+              <input 
+                type="text" 
+                placeholder="Search transactions..." 
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className={styles.searchInput}
+              />
+            </div>
+            
+            <select 
+              value={sortOrder}
+              onChange={e => setSortOrder(e.target.value)}
+              className={styles.sortSelect}
+            >
+              <option value="Newest">Newest</option>
+              <option value="Oldest">Oldest</option>
+              <option value="Highest Amount">Highest Amount</option>
+              <option value="Lowest Amount">Lowest Amount</option>
+            </select>
+
+            <div style={{ width: '1px', height: '24px', background: 'var(--border-input)', margin: '0 4px' }} />
+
             <Badge variant="chip" active={ledgerFilter === 'All Records'} onClick={() => setLedgerFilter('All Records')} style={{ cursor: 'pointer' }}>All Records</Badge>
             <Badge variant="chip" active={ledgerFilter === 'Income'} onClick={() => setLedgerFilter('Income')} style={{ cursor: 'pointer' }}>Income</Badge>
             <Badge variant="chip" active={ledgerFilter === 'Expenses'} onClick={() => setLedgerFilter('Expenses')} style={{ cursor: 'pointer' }}>Expenses</Badge>
@@ -351,9 +461,7 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
         </div>
         
         {filteredTransactions.length === 0 ? (
-          <div className="text-secondary" style={{ textAlign: 'center', padding: 'var(--space-24) 0' }}>
-            No transactions match this filter.
-          </div>
+          renderEmptyState()
         ) : (
           <div className={styles.transactionList}>
             {filteredTransactions.map((tx) => {
@@ -380,10 +488,31 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
                     </div>
                   </div>
                   <div className={styles.txRight}>
-                    <div className={isIncome ? styles.txAmountPos : styles.txAmountNeg}>
-                      {isIncome ? '+' : '-'}{Number(tx.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div className={styles.txHoverActions}>
+                        <button 
+                          onClick={() => {
+                            setEditingTransaction(tx);
+                            setIsTransactionOpen(true);
+                          }} 
+                          className={styles.txActionBtn}
+                          title="Edit Transaction"
+                        >
+                          <Edit size={14} />
+                        </button>
+                        <button 
+                          onClick={() => setDeletingTransaction(tx)} 
+                          className={`${styles.txActionBtn} ${styles.txActionBtnDanger}`}
+                          title="Delete Transaction"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                      <div className={isIncome ? styles.txAmountPos : styles.txAmountNeg}>
+                        {isIncome ? '+' : '-'}{Number(tx.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      </div>
                     </div>
-                    <div className={styles.txStatus}>{tx.type}</div>
+                    <div className={styles.txStatus} style={{ textTransform: 'capitalize' }}>{tx.type}</div>
                   </div>
                 </div>
               );
@@ -391,6 +520,81 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
           </div>
         )}
       </div>
+
+      <TransactionModal 
+        isOpen={isTransactionOpen}
+        onClose={() => {
+          setIsTransactionOpen(false);
+          setEditingTransaction(null);
+        }}
+        transaction={editingTransaction}
+      />
+
+      <SubscriptionModal
+        isOpen={isSubModalOpen}
+        onClose={() => {
+          setIsSubModalOpen(false);
+          setEditingSub(null);
+        }}
+        initialData={editingSub}
+        onSave={() => setIsSubModalOpen(false)}
+      />
+
+      {(deletingTransaction || deletingSub) && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)' }} onClick={() => { setDeletingTransaction(null); setDeletingSub(null); }}>
+          <div style={{ backgroundColor: 'var(--surface)', padding: 'var(--space-24)', borderRadius: '16px', width: '90%', maxWidth: '400px', boxShadow: 'var(--shadow-lg)' }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#FEE2E2', color: '#DC2626', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Trash2 size={20} />
+              </div>
+              <h3 style={{ fontSize: '18px', fontWeight: '600' }}>Delete {deletingTransaction ? 'Transaction' : 'Subscription'}?</h3>
+            </div>
+            
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', lineHeight: 1.5 }}>
+              Are you sure you want to delete this {deletingTransaction ? 'transaction' : 'subscription'}? 
+              <br/>
+              <strong style={{ color: 'var(--text-primary)' }}>{deletingTransaction ? deletingTransaction.description : deletingSub.name}</strong> 
+              {deletingTransaction && ` (${Number(deletingTransaction.amount).toLocaleString('en-US')} IDR)`}
+            </p>
+
+            {deleteError && (
+              <div style={{ backgroundColor: '#FEE2E2', color: '#DC2626', padding: '12px', borderRadius: '8px', marginBottom: '16px', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <AlertCircle size={16} />
+                <span>{deleteError}</span>
+              </div>
+            )}
+            
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <Button variant="secondary" onClick={() => { setDeletingTransaction(null); setDeletingSub(null); }} disabled={isDeleting}>Cancel</Button>
+              <Button 
+                variant="primary" 
+                style={{ backgroundColor: '#DC2626', borderColor: '#DC2626' }}
+                disabled={isDeleting}
+                onClick={async () => {
+                  setIsDeleting(true);
+                  setDeleteError('');
+                  let res;
+                  if (deletingTransaction) {
+                    res = await deleteTransaction(deletingTransaction.id);
+                  } else if (deletingSub) {
+                    res = await deleteSubscription(deletingSub.id);
+                  }
+                  
+                  setIsDeleting(false);
+                  if (res?.error) {
+                    setDeleteError(res.error);
+                  } else {
+                    setDeletingTransaction(null);
+                    setDeletingSub(null);
+                  }
+                }}
+              >
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

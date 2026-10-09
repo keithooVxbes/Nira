@@ -358,6 +358,95 @@
   border-radius: var(--radius-full);
 }
 
+/* Focus Timer Card */
+.timerCard {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 0;
+}
+
+.timerCard .kpiTop {
+  margin-bottom: 16px;
+}
+
+.timerCard .kpiLabelGroup {
+  gap: 16px;
+}
+
+.timerModeGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background-color: var(--surface-alt);
+  padding: 4px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(223, 217, 209, 0.6);
+  width: fit-content;
+  margin-bottom: 16px;
+}
+
+.timerModeChip {
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  line-height: 1.2;
+}
+
+.timerModeChip:hover {
+  color: var(--text-primary);
+}
+
+.timerModeChipActive {
+  background-color: var(--surface);
+  color: var(--text-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(25, 25, 27, 0.08);
+}
+
+.timerDisplay {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 18px;
+}
+
+.timerControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.timerStartBtn {
+  flex: 1;
+  padding: 8px 16px;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+}
+
+.timerResetBtn {
+  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+}
+
 @media (max-width: 1100px) {
   .dashboardGrid {
     grid-template-columns: 1fr;

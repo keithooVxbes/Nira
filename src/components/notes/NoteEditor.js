@@ -1,32 +1,29 @@
 import { useState, useEffect } from 'react';
 import { X, Pin, Save, Trash2 } from 'lucide-react';
-import Badge from '@/components/ui/Badge';
 import NoteToolbar from './NoteToolbar';
 import styles from './NoteEditor.module.css';
 
-export default function NoteEditor({ isOpen, note, onClose, onSave, onDelete }) {
+export default function NoteEditor({ isOpen, note, onClose, onSave, onDelete, folders = [] }) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [folder, setFolder] = useState('All notes');
+  const [folderId, setFolderId] = useState('');
   const [pinned, setPinned] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       if (note) {
-        /* eslint-disable react-hooks/set-state-in-effect */
-        setTitle(note.title);
-        setContent(note.content);
-        setFolder(note.folder || 'All notes');
+        setTitle(note.title || '');
+        setContent(note.content || '');
+        setFolderId(note.folder_id || '');
         setPinned(note.pinned || false);
       } else {
         setTitle('');
         setContent('');
-        setFolder('All notes');
+        setFolderId('');
         setPinned(false);
       }
       setIsPreview(false);
-      /* eslint-enable react-hooks/set-state-in-effect */
     }
   }, [isOpen, note]);
 
@@ -45,7 +42,7 @@ export default function NoteEditor({ isOpen, note, onClose, onSave, onDelete }) 
       id: note ? note.id : Date.now(),
       title: title || 'Untitled Note',
       content,
-      folder,
+      folder_id: folderId || null,
       pinned,
       updatedAt: new Date().toISOString()
     });
@@ -107,9 +104,27 @@ export default function NoteEditor({ isOpen, note, onClose, onSave, onDelete }) 
               placeholder="Note title"
               autoFocus
             />
-            <div className={styles.meta}>
-              <Badge variant="chip">{folder}</Badge>
-              <span>{note ? 'Editing' : 'New note'}</span>
+            <div className={styles.meta} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <select 
+                value={folderId} 
+                onChange={e => setFolderId(e.target.value)}
+                style={{ 
+                  background: 'var(--surface-input)', 
+                  border: '1px solid var(--border-input)', 
+                  borderRadius: '16px', 
+                  padding: '4px 12px', 
+                  fontSize: '12px', 
+                  color: 'var(--text-primary)',
+                  outline: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="">All Notes</option>
+                {folders.map(f => (
+                  <option key={f.id} value={f.id}>{f.name}</option>
+                ))}
+              </select>
+              <span style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>{note ? 'Editing' : 'New note'}</span>
             </div>
           </div>
           
