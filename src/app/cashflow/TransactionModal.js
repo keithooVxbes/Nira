@@ -74,7 +74,7 @@ export default function TransactionModal() {
               
               <div className={styles.formGroup}>
                 <label className={styles.label}>Category</label>
-                <select name="category" className={`${styles.input} ${styles['category-select']}`} required>
+                <select name="category" className={styles.input} required>
                   <option value="Food">Food</option>
                   <option value="Transport">Transport</option>
                   <option value="Utilities">Utilities</option>

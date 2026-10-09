@@ -52,7 +52,7 @@ export default function Login() {
       </form>
 
       <div className={styles.footerText}>
-        <span className="text-secondary">Don't have an account? </span>
+        <span className="text-secondary">Don&apos;t have an account? </span>
         <Link href="/signup" className={styles.accentLink}>Create account</Link>
       </div>
     </AuthLayout>

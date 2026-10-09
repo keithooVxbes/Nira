@@ -5,7 +5,9 @@ export default function AuthLayout({ children }) {
   return (
     <div className={styles.container}>
       <div className={styles.leftPanel}>
-        <div className={styles.brand}>Productivity</div>
+        <div className={styles.brand}>
+          <img src="/brand/nira-logo.svg" alt="Nira" width="104" height="32" style={{ display: 'block' }} />
+        </div>
         
         <div className={styles.heroContent}>
           <h1 className="auth-hero">Everything you need to stay on top of student life.</h1>
@@ -45,7 +47,7 @@ export default function AuthLayout({ children }) {
           </div>
         </div>
         
-        <div className={styles.footer}>© Productivity Manager</div>
+        <div className={styles.footer}>© Nira</div>
       </div>
       
       <div className={styles.rightPanel}>

@@ -22,20 +22,71 @@
 .folderItem {
   padding: var(--space-8) var(--space-12);
   border-radius: var(--radius-8);
-  color: var(--muted);
+  color: #6B6762;
   font-size: 14px;
+  font-weight: 500;
+  background-color: transparent;
   cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.folderItemText {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.folderActions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.folderItem:hover .folderActions {
+  opacity: 1;
+}
+
+.folderActionBtn {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: var(--radius-4);
   transition: all 0.2s;
+}
+
+.folderActionBtn:hover {
+  background-color: var(--surface-alt);
+  color: var(--text-primary);
+}
+
+.folderActionBtnDelete:hover {
+  background-color: #FEF2F2;
+  color: #EF4444;
 }
 
 .folderItem:hover {
   background-color: var(--bg);
-  color: var(--text);
+  color: var(--text-primary);
 }
 
 .active {
-  background-color: var(--nav-active);
-  color: var(--text);
+  background-color: #19191B !important;
+  color: #FFFFFF !important;
+}
+
+.active .folderActionBtn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
 }
 
 .addFolder {

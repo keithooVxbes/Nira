@@ -1,30 +1,62 @@
 :root {
-  /* Colors */
-  --bg: #0e0f12;
-  --surface: #14161b;
-  --surface-alt: #16181d;
-  --border: #22252c;
-  --border-input: #2c313a;
-  --row-divider: #1d2026;
-  --nav-active: #1a1d24;
-  --text: #e6e8ec;
-  --muted: #8b919c;
-  --pill-text: #aab0bb;
-  --accent: #7c9cff;
-  --on-accent: #0e0f12;
-  --chart-bar: #2a3550;
-  --skeleton: #22252c;
+  /* Orbit Warm Canvas Foundation */
+  --bg: #FFF8F0;
+  --bg-canvas: #FFF8F0;
+  --surface: #FFFFFF;
+  --surface-alt: #F9F3EB;
+  --surface-input: #F3ECE2;
+  --surface-hover: #EAE2D7;
+  
+  /* Borders & Dividers */
+  --border: rgba(223, 217, 209, 0.6);
+  --border-subtle: rgba(223, 217, 209, 0.6);
+  --border-input: rgba(223, 217, 209, 0.8);
+  --border-focus: #19191B;
+  --row-divider: rgba(223, 217, 209, 0.5);
+  --nav-active: #19191B;
 
-  /* Class Tints */
-  --tint-blue: #7c9cff;
-  --tint-green: #5fd0b0;
-  --tint-orange: #e8a76b;
-  --tint-purple: #c08cf0;
+  /* Text & Typography Colors */
+  --text: #19191B;
+  --text-primary: #19191B;
+  --text-secondary: #6B6762;
+  --text-tertiary: #9E9890;
+  --muted: #6B6762;
+  --pill-text: #4B5563;
+  --text-on-dark: #FFFFFF;
+
+  /* Brand & Functional Accents */
+  --accent: #6366F1;
+  --accent-primary: #6366F1;
+  --accent-light: #EEF2FF;
+  --on-accent: #FFFFFF;
+  --accent-warning: #F59E0B;
+  --accent-amber-card: #FDE68A;
+
+  /* Semantic & Status Colors */
+  --status-income: #10B981;
+  --status-income-bg: #ECFDF5;
+  --status-expense: #EF4444;
+  --status-expense-bg: #FEF2F2;
+  --status-in-progress: #3B82F6;
+  --status-in-progress-bg: #EFF6FF;
+  --status-low: #8B5CF6;
+  --status-low-bg: #F5F3FF;
+  --danger: #EF4444;
+
+  /* Tints for schedule / classes / tags */
+  --tint-blue: #3B82F6;
+  --tint-green: #10B981;
+  --tint-orange: #F59E0B;
+  --tint-purple: #8B5CF6;
+  --chart-bar: #E0E7FF;
+  --chart-bar-active: #6366F1;
+  --skeleton: #EAE2D7;
 
   /* Spacing */
   --space-4: 4px;
   --space-8: 8px;
   --space-12: 12px;
+  --space-14: 14px;
   --space-16: 16px;
   --space-20: 20px;
   --space-24: 24px;
@@ -33,8 +65,23 @@
 
   /* Border Radius */
   --radius-8: 8px;
+  --radius-10: 10px;
   --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-18: 18px;
+  --radius-20: 20px;
+  --radius-24: 24px;
+  --radius-card: 24px;
   --radius-full: 9999px;
+
+  /* Multi-layer Ambient Shadows */
+  --shadow-card: 0px 4px 20px -2px rgba(25, 25, 27, 0.04), 0px 2px 6px -1px rgba(25, 25, 27, 0.02);
+  --shadow-hover: 0px 12px 32px -4px rgba(25, 25, 27, 0.08), 0px 4px 12px -2px rgba(25, 25, 27, 0.04);
+  --shadow-modal: 0px 24px 64px -12px rgba(25, 25, 27, 0.16);
+  --shadow-floating-bar: 0px 8px 30px rgba(0, 0, 0, 0.08);
+
+  /* Font */
+  --font-orbit: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 * {
@@ -48,6 +95,7 @@ body {
   color: var(--text);
   font-size: 14px;
   line-height: 1.5;
+  font-family: var(--font-orbit);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -74,43 +122,74 @@ ul {
 }
 
 /* Typography utilities */
+.display-2xl {
+  font-size: 48px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+
+.display-xl {
+  font-size: 36px;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+}
+
 .h1 {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
 }
 
 .stat-number {
-  font-size: 26px;
-  font-weight: 600;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
 }
 
 .card-title {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
 }
 
 .text-secondary {
   font-size: 13px;
-  color: var(--muted);
+  color: var(--text-secondary);
 }
 
 .text-small {
   font-size: 12px;
+  color: var(--text-tertiary);
 }
 
 .auth-hero {
   font-size: 32px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
 }
 
-/* Media Queries for Typography & Common Utilities */
+/* Media Queries */
 @media (max-width: 768px) {
+  .display-2xl {
+    font-size: 36px;
+  }
+  .display-xl {
+    font-size: 28px;
+  }
   .h1 {
-    font-size: 20px;
+    font-size: 22px;
   }
   .stat-number {
-    font-size: 22px;
+    font-size: 24px;
   }
   .auth-hero {
     font-size: 26px;
@@ -121,3 +200,46 @@ ul {
     --space-24: 16px;
   }
 }
+
+/* Semantic feature icon box utilities */
+.iconBox {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.iconBoxViolet {
+  background-color: #EEF2FF;
+  color: #6366F1;
+  border: 1px solid rgba(99, 102, 241, 0.16);
+}
+
+.iconBoxEmerald {
+  background-color: #ECFDF5;
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.16);
+}
+
+.iconBoxAmber {
+  background-color: #FEF3C7;
+  color: #D97706;
+  border: 1px solid rgba(217, 119, 6, 0.16);
+}
+
+.iconBoxRose {
+  background-color: #FEF2F2;
+  color: #EF4444;
+  border: 1px solid rgba(239, 68, 68, 0.16);
+}
+
+.iconBoxBlue {
+  background-color: #EFF6FF;
+  color: #3B82F6;
+  border: 1px solid rgba(59, 130, 246, 0.16);
+}
+

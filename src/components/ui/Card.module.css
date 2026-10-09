@@ -1,10 +1,20 @@
 .card {
-  border-radius: var(--radius-12);
-  padding: var(--space-20, 20px);
-  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: var(--space-24);
+  border: 1px solid rgba(223, 217, 209, 0.75);
+  background-color: var(--surface);
+  box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
-  gap: var(--space-14, 14px);
+  gap: var(--space-14);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+  border-color: rgba(223, 217, 209, 0.95);
 }
 
 .default {
@@ -13,10 +23,183 @@
 
 .alt {
   background-color: var(--surface-alt);
+  border-color: rgba(223, 217, 209, 0.8);
+}
+
+.subtle {
+  background-color: #FAF7F2;
+  border-color: rgba(223, 217, 209, 0.7);
+}
+
+.warm {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAF6F0 100%);
+  border-color: rgba(223, 217, 209, 0.8);
+}
+
+.amber {
+  background-color: var(--accent-amber-card);
+  border-color: #FCD34D;
+  color: #78350F;
+}
+
+.amber:hover {
+  box-shadow: 0 10px 25px -4px rgba(245, 158, 11, 0.15);
+}
+
+.tintViolet {
+  background-color: #FAF8FF;
+  border-color: rgba(99, 102, 241, 0.25);
+}
+
+.tintEmerald {
+  background-color: #F6FDF9;
+  border-color: rgba(16, 185, 129, 0.25);
 }
 
 .transparent {
   background-color: transparent;
   border: none;
+  box-shadow: none;
   padding: 0;
+  transform: none !important;
 }
+
+/* KPI Card specific micro-layouts */
+.kpiCard {
+  border-radius: var(--radius-card);
+  padding: var(--space-20) var(--space-24);
+  background-color: #FFFFFF;
+  border: 1px solid rgba(223, 217, 209, 0.75);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.kpiCard:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+  border-color: rgba(223, 217, 209, 0.95);
+}
+
+.kpiTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.kpiLabelGroup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.kpiLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: #3F3A36;
+  letter-spacing: -0.01em;
+}
+
+.kpiIconBox {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(25, 25, 27, 0.03);
+}
+
+/* Colored feature icon variants */
+.iconViolet {
+  background-color: #F3E8FF;
+  color: #7C3AED;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+.iconEmerald {
+  background-color: #D1FAE5;
+  color: #059669;
+  border: 1px solid rgba(5, 150, 105, 0.2);
+}
+
+.iconAmber {
+  background-color: #FEF3C7;
+  color: #D97706;
+  border: 1px solid rgba(217, 119, 6, 0.2);
+}
+
+.iconRose {
+  background-color: #FFE4E6;
+  color: #E11D48;
+  border: 1px solid rgba(225, 29, 72, 0.2);
+}
+
+.iconBlue {
+  background-color: #DBEAFE;
+  color: #2563EB;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+}
+
+.kpiValue {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.kpiFooter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Trend and Status Badges */
+.trendPositive {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #10B981;
+  background-color: #ECFDF5;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.trendNegative {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #EF4444;
+  background-color: #FEF2F2;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.trendNeutral {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background-color: var(--surface-input);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(223, 217, 209, 0.7);
+}
+

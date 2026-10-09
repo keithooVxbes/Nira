@@ -38,8 +38,13 @@
   border-radius: var(--radius-8);
   padding: var(--space-16);
   border: 1px solid var(--border-input);
-  transition: border-color 0.2s;
-  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  cursor: grab;
+  position: relative;
+}
+
+.assignmentCard:active {
+  cursor: grabbing;
 }
 
 .assignmentCard:hover {
@@ -48,6 +53,43 @@
 
 .cardHeader {
   margin-bottom: var(--space-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cardActions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.assignmentCard:hover .cardActions {
+  opacity: 1;
+}
+
+.actionBtn {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.actionBtn:hover {
+  background-color: var(--surface-alt);
+  color: var(--text-primary);
+}
+
+.actionBtnDelete:hover {
+  background-color: #FEF2F2;
+  color: #EF4444;
 }
 
 .cardFooter {
@@ -61,3 +103,4 @@
     grid-template-columns: 1fr;
   }
 }
+
