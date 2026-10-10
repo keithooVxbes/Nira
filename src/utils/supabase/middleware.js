@@ -32,7 +32,7 @@ export async function updateSession(request) {
   } = await supabase.auth.getUser()
 
   const path = request.nextUrl.pathname
-  const isAuthRoute = path.startsWith('/login') || path.startsWith('/signup')
+  const isAuthRoute = path.startsWith('/login') || path.startsWith('/signup') || path.startsWith('/forgot-password') || path.startsWith('/reset-password')
 
   if (!path.startsWith('/_next') && !path.startsWith('/api') && path !== '/favicon.ico') {
     if (!user && !isAuthRoute) {
