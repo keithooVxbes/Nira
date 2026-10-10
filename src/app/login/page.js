@@ -43,7 +43,7 @@ export default function Login() {
         </div>
 
         <div className={styles.forgotPassword}>
-          <Link href="/reset-password" className={styles.accentLink}>Forgot password?</Link>
+          <Link href="/forgot-password" className={styles.accentLink}>Forgot password?</Link>
         </div>
 
         <Button variant="primary" type="submit" className={styles.submitBtn} disabled={loading}>

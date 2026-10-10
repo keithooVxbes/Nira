@@ -1,0 +1,44 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin-bottom: var(--space-8);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.backToLogin {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-8);
+}
+
+.accentLink {
+  color: var(--accent);
+  font-size: 13px;
+}
+
+.accentLink:hover {
+  text-decoration: underline;
+}
+
+.submitBtn {
+  width: 100%;
+  margin-top: var(--space-8);
+}
+
+.successMessage {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
