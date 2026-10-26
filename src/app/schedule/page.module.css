@@ -1,86 +1,269 @@
-.filterGroup {
+.scheduleContainer {
   display: flex;
-  gap: var(--space-8);
-  margin-right: var(--space-16);
-  flex-wrap: wrap;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  gap: var(--space-16, 16px);
+  min-height: calc(100vh - 120px);
+}
+
+.headerReset {
+  margin-bottom: 0;
+}
+
+.scheduleTitle {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  line-height: 1.15;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: var(--space-16);
-  height: 100%;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-12, 12px);
+  flex: 1;
+  align-items: stretch;
+  width: 100%;
+  min-height: 520px;
 }
 
 .dayCard {
-  padding: var(--space-16);
-  min-height: 400px;
+  padding: 16px 14px;
+  border-radius: var(--radius-card, 16px);
+  background-color: var(--surface);
+  border: 1px solid rgba(223, 217, 209, 0.75);
+  box-shadow: 0 1px 4px rgba(25, 25, 27, 0.04);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dayCard:hover {
+  box-shadow: 0 4px 12px rgba(25, 25, 27, 0.08);
+  border-color: rgba(223, 217, 209, 0.95);
+}
+
+.dayHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(223, 217, 209, 0.55);
+}
+
+.dayTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .dayTitle {
-  font-size: 14px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #19191B;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.todayBadge {
+  font-size: 10px;
   font-weight: 600;
-  margin-bottom: var(--space-16);
+  color: #FFFFFF;
+  background: #19191B;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+}
+
+.dayCount {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  background: var(--surface-alt);
+  padding: 1px 6px;
+  border-radius: 6px;
+  border: 1px solid rgba(223, 217, 209, 0.6);
 }
 
 .classList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
+  gap: 8px;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.emptyDay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-style: italic;
+  text-align: center;
+  padding: 24px 4px;
+  user-select: none;
 }
 
 .classBlock {
-  border-radius: var(--radius-8);
-  padding: var(--space-12);
+  border-radius: 10px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-  transition: transform 0.2s;
+  gap: 6px;
+  position: relative;
+  border: 1px solid;
+  border-left-width: 4px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
+  background: var(--surface);
 }
 
 .classBlock:hover {
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.classHeaderRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 4px;
+  width: 100%;
 }
 
 .className {
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.classTime, .classRoom {
+  font-weight: 700;
   font-size: 13px;
+  color: #19191B !important;
+  line-height: 1.35;
+  word-break: break-word;
+  letter-spacing: -0.01em;
 }
 
-/* Color Themes (background opacity 13%, text full color) */
+.classActions {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+}
+
+.classBlock:hover .classActions {
+  opacity: 1;
+}
+
+.actionBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #64748B;
+  padding: 2px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.actionBtn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: #0F172A;
+}
+
+.actionBtnDanger:hover {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+.classTime {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.classRoom {
+  font-size: 11px;
+  font-weight: 500;
+  color: #4B5563;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.themeIcon {
+  flex-shrink: 0;
+}
+
+/* Color Themes with solid left bar and high-contrast dark text */
 .theme-blue {
-  background-color: color-mix(in srgb, var(--tint-blue) 13%, transparent);
-  color: var(--tint-blue);
+  background-color: #F0F6FE;
+  border-color: rgba(37, 99, 235, 0.2);
+  border-left-color: #2563EB;
 }
-.theme-green {
-  background-color: color-mix(in srgb, var(--tint-green) 13%, transparent);
-  color: var(--tint-green);
-}
-.theme-amber {
-  background-color: color-mix(in srgb, var(--tint-orange) 13%, transparent);
-  color: var(--tint-orange);
-}
-.theme-emerald {
-  background-color: color-mix(in srgb, var(--accent-emerald) 13%, transparent);
-  color: var(--accent-emerald);
-}
-.theme-violet {
-  background-color: color-mix(in srgb, var(--tint-purple) 13%, transparent);
-  color: var(--tint-purple);
-}
-.theme-rose {
-  background-color: color-mix(in srgb, var(--accent-rose) 13%, transparent);
-  color: var(--accent-rose);
+.theme-blue .themeIcon {
+  color: #2563EB;
 }
 
-@media (max-width: 1024px) {
+.theme-green {
+  background-color: #F0FDF4;
+  border-color: rgba(22, 163, 74, 0.2);
+  border-left-color: #16A34A;
+}
+.theme-green .themeIcon {
+  color: #16A34A;
+}
+
+.theme-amber {
+  background-color: #FFFBEB;
+  border-color: rgba(217, 119, 6, 0.22);
+  border-left-color: #D97706;
+}
+.theme-amber .themeIcon {
+  color: #D97706;
+}
+
+.theme-emerald {
+  background-color: #ECFDF5;
+  border-color: rgba(5, 150, 105, 0.2);
+  border-left-color: #059669;
+}
+.theme-emerald .themeIcon {
+  color: #059669;
+}
+
+.theme-violet {
+  background-color: #FAF5FF;
+  border-color: rgba(124, 58, 237, 0.2);
+  border-left-color: #7C3AED;
+}
+.theme-violet .themeIcon {
+  color: #7C3AED;
+}
+
+.theme-rose {
+  background-color: #FFF1F2;
+  border-color: rgba(225, 29, 72, 0.2);
+  border-left-color: #E11D48;
+}
+.theme-rose .themeIcon {
+  color: #E11D48;
+}
+
+@media (max-width: 1200px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 

@@ -92,7 +92,7 @@ export async function createTransaction(formData) {
   }
 
   revalidatePath('/', 'layout')
-  return { success: true }
+  return { success: true, data: newTx }
 }
 
 export async function getSubscriptions() {
@@ -234,3 +234,21 @@ export async function deleteTransaction(id) {
   revalidatePath('/', 'layout')
   return { success: true }
 }
+
+export async function clearAllTransactions() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (!user) return { error: 'Unauthorized' }
+
+  const { error } = await supabase
+    .from('transactions')
+    .delete()
+    .eq('user_id', user.id)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/', 'layout')
+  return { success: true }
+}
+

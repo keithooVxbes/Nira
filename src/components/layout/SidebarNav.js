@@ -6,11 +6,11 @@ import { LayoutDashboard, Wallet, ClipboardList, Calendar, StickyNote } from 'lu
 import styles from './Sidebar.module.css';
 
 const navItems = [
-  { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard', tint: 'violet' },
-  { name: 'Cashflow', icon: Wallet, href: '/cashflow', tint: 'emerald' },
-  { name: 'Assignments', icon: ClipboardList, href: '/assignments', tint: 'blue' },
-  { name: 'Schedule', icon: Calendar, href: '/schedule', tint: 'amber' },
-  { name: 'Notes', icon: StickyNote, href: '/notes', tint: 'rose' },
+  { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
+  { name: 'Cashflow', icon: Wallet, href: '/cashflow' },
+  { name: 'Assignments', icon: ClipboardList, href: '/assignments' },
+  { name: 'Schedule', icon: Calendar, href: '/schedule' },
+  { name: 'Notes', icon: StickyNote, href: '/notes' },
 ];
 
 export default function SidebarNav({ isCollapsed }) {
@@ -29,8 +29,8 @@ export default function SidebarNav({ isCollapsed }) {
                 className={`${styles.navItem} ${isActive ? styles.active : ''} ${isCollapsed ? styles.collapsedNavItem : ''}`}
                 title={isCollapsed ? item.name : undefined}
               >
-                <div className={`${styles.navIconBox} ${styles[item.tint]}`}>
-                  <Icon size={16} strokeWidth={2.5} />
+                <div className={styles.navIconBox}>
+                  <Icon size={16} strokeWidth={2.2} />
                 </div>
                 {!isCollapsed && <span className={styles.navLabel}>{item.name}</span>}
                 {isActive && !isCollapsed && <span className={styles.activePill} />}

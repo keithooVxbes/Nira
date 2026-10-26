@@ -42,7 +42,7 @@
 }
 
 .header {
-  margin-bottom: 48px;
+  margin-bottom: 32px;
   padding: 0 var(--space-8);
   display: flex;
   justify-content: center;
@@ -69,25 +69,12 @@
   flex-shrink: 0;
 }
 
-.brandTextGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
 .brand {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   color: var(--text-primary);
-  line-height: 1.2;
-}
-
-.workspaceTag {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-tertiary);
-  letter-spacing: 0.01em;
+  line-height: 1;
 }
 
 .nav {
@@ -97,20 +84,20 @@
 .nav ul {
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
+  gap: 8px;
 }
 
 .navItem {
   display: flex;
   align-items: center;
-  gap: var(--space-12);
-  padding: 10px 14px;
-  border-radius: var(--radius-full);
-  color: #4B5563;
+  gap: var(--space-12, 12px);
+  padding: 8px 12px;
+  border-radius: var(--radius-full, 9999px);
+  color: var(--text-primary, #19191B);
   font-size: 14px;
   font-weight: 550;
   letter-spacing: -0.01em;
-  transition: background 200ms ease, color 200ms ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   white-space: nowrap;
   overflow: hidden;
@@ -118,35 +105,35 @@
 
 .collapsedNavItem {
   justify-content: center;
-  padding: 10px;
+  padding: 8px;
 }
 
 .navItem:hover {
   background-color: rgba(25, 25, 27, 0.06);
-  color: #19191B;
-}
-
-.navItem:hover .navIconBox {
-  transform: scale(1.05);
+  color: #000000;
 }
 
 .navIconBox {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 200ms ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
-  box-shadow: 0 1px 2px rgba(25, 25, 27, 0.02);
+  background-color: var(--surface-alt, #F9F3EB);
+  color: var(--text-primary, #19191B);
+  border: 1px solid rgba(223, 217, 209, 0.85);
+  box-shadow: 0 1px 2px rgba(25, 25, 27, 0.03);
 }
 
-.violet { background-color: #F3E8FF; color: #7C3AED; border: 1px solid rgba(124, 58, 237, 0.2); }
-.emerald { background-color: #D1FAE5; color: #059669; border: 1px solid rgba(5, 150, 105, 0.2); }
-.blue { background-color: #DBEAFE; color: #2563EB; border: 1px solid rgba(37, 99, 235, 0.2); }
-.amber { background-color: #FEF3C7; color: #D97706; border: 1px solid rgba(217, 119, 6, 0.2); }
-.rose { background-color: #FFE4E6; color: #E11D48; border: 1px solid rgba(225, 29, 72, 0.2); }
+.navItem:hover .navIconBox {
+  background-color: #EAE2D7;
+  color: #000000;
+  border-color: rgba(223, 217, 209, 1);
+  transform: scale(1.02);
+}
 
 .navLabel {
   flex: 1;
@@ -156,13 +143,14 @@
   background: #19191B !important;
   color: #FFFFFF !important;
   font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(25, 25, 27, 0.12);
 }
 
 .active .navIconBox {
-  background-color: rgba(255, 255, 255, 0.14) !important;
+  background-color: rgba(255, 255, 255, 0.15) !important;
   color: #FFFFFF !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: none !important;
   transform: none !important;
 }
 
@@ -171,7 +159,8 @@
   height: 6px;
   border-radius: var(--radius-full);
   background-color: #FFFFFF;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+  opacity: 0.9;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
   margin-left: auto;
 }
 

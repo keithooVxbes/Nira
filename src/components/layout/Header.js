@@ -3,12 +3,14 @@ import styles from './Header.module.css';
 export default function Header({ 
   title, 
   subtitle, 
-  actions 
+  actions,
+  titleClassName,
+  className
 }) {
   return (
-    <header className={styles.header}>
+    <header className={`${styles.header} ${className || ''}`}>
       <div className={styles.titleSection}>
-        <h1 className={styles.title}>{title}</h1>
+        <h1 className={`${styles.title} ${titleClassName || ''}`}>{title}</h1>
         {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
       </div>
       

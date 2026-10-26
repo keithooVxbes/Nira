@@ -55,10 +55,7 @@ export default function SidebarClient({ initial, username, email }) {
               <img src="/brand/nira-mark.svg" alt="Nira" width="32" height="32" style={{ display: 'block' }} />
             </div>
             {!isCollapsed && (
-              <div className={styles.brandTextGroup}>
-                <span className={styles.brand}>Nira</span>
-                <span className={styles.workspaceTag}>Personal Workspace</span>
-              </div>
+              <span className={styles.brand}>Nira</span>
             )}
           </div>
         </div>

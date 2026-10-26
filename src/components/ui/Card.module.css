@@ -66,20 +66,20 @@
 
 /* KPI Card specific micro-layouts */
 .kpiCard {
-  border-radius: var(--radius-card);
-  padding: var(--space-20) var(--space-24);
-  background-color: #FFFFFF;
+  border-radius: var(--radius-card, 16px);
+  padding: 18px 22px;
+  background-color: var(--surface, #FFFFFF);
   border: 1px solid rgba(223, 217, 209, 0.75);
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 1px 4px rgba(25, 25, 27, 0.04);
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
+  gap: 12px;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
 }
 
 .kpiCard:hover {
-  box-shadow: var(--shadow-hover);
+  box-shadow: 0 4px 12px rgba(25, 25, 27, 0.08);
   transform: translateY(-2px);
   border-color: rgba(223, 217, 209, 0.95);
 }
@@ -94,65 +94,37 @@
 .kpiLabelGroup {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .kpiLabel {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: #3F3A36;
   letter-spacing: -0.01em;
 }
 
 .kpiIconBox {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 14px;
   flex-shrink: 0;
-  box-shadow: 0 1px 3px rgba(25, 25, 27, 0.03);
-}
-
-/* Colored feature icon variants */
-.iconViolet {
-  background-color: #F3E8FF;
-  color: #7C3AED;
-  border: 1px solid rgba(124, 58, 237, 0.2);
-}
-
-.iconEmerald {
-  background-color: #D1FAE5;
-  color: #059669;
-  border: 1px solid rgba(5, 150, 105, 0.2);
-}
-
-.iconAmber {
-  background-color: #FEF3C7;
-  color: #D97706;
-  border: 1px solid rgba(217, 119, 6, 0.2);
-}
-
-.iconRose {
-  background-color: #FFE4E6;
-  color: #E11D48;
-  border: 1px solid rgba(225, 29, 72, 0.2);
-}
-
-.iconBlue {
-  background-color: #DBEAFE;
-  color: #2563EB;
-  border: 1px solid rgba(37, 99, 235, 0.2);
+  background-color: var(--surface-alt, #F9F3EB);
+  color: var(--text-primary, #19191B);
+  border: 1px solid rgba(223, 217, 209, 0.85);
+  box-shadow: 0 1px 2px rgba(25, 25, 27, 0.03);
 }
 
 .kpiValue {
-  font-size: 36px;
+  font-size: 26px;
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
   color: var(--text-primary);
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .kpiFooter {
@@ -160,7 +132,7 @@
   align-items: center;
   gap: var(--space-8);
   font-size: 12px;
-  color: var(--text-secondary);
+  color: var(--text-tertiary, #9E9890);
 }
 
 /* Trend and Status Badges */

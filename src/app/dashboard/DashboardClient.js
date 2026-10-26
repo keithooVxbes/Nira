@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
-import Badge from '@/components/ui/Badge';
 import { Wallet, ClipboardList, StickyNote, Clock, Calendar, Play, Pause, RotateCcw } from 'lucide-react';
 import styles from './page.module.css';
 import AssignmentModal from '@/app/assignments/AssignmentModal';
@@ -217,25 +216,8 @@ export default function DashboardClient({ username, initial, greeting, balance, 
     setIsTransactionOpen(false);
   };
 
-  const actions = (
-    <div className={styles.actionGroup}>
-      <Button variant="secondary" className={styles.actionBtn} onClick={() => setIsTransactionOpen(true)}>
-        <Wallet size={16} strokeWidth={2.5} />
-        <span className={styles.actionText}>Add Transaction</span>
-      </Button>
-      <Button variant="secondary" className={styles.actionBtn} onClick={() => setIsAssignmentOpen(true)}>
-        <ClipboardList size={16} strokeWidth={2.5} />
-        <span className={styles.actionText}>Add Assignment</span>
-      </Button>
-      <Button variant="primary" className={styles.actionBtn} onClick={() => setIsNoteOpen(true)}>
-        <StickyNote size={16} strokeWidth={2.5} />
-        <span className={styles.actionText}>Add Note</span>
-      </Button>
-    </div>
-  );
-
   return (
-    <>
+    <div className={styles.dashboardContainer}>
       {toastMsg && (
         <div style={{ position: 'fixed', bottom: '24px', right: '24px', background: 'var(--text-primary)', color: 'var(--surface)', padding: '12px 24px', borderRadius: '8px', zIndex: 1000, boxShadow: 'var(--shadow-lg)' }}>
           {toastMsg}
@@ -243,20 +225,17 @@ export default function DashboardClient({ username, initial, greeting, balance, 
       )}
       <header className={styles.dashboardHero}>
         <div className={styles.heroTop}>
-          <h1 className={styles.heroTitle}>{greeting}, {username} ✨</h1>
-        </div>
-        <div className={styles.heroActions}>
-          {actions}
+          <h1 className={styles.heroTitle}>{greeting}, {username}</h1>
         </div>
       </header>
 
-      {/* 4 Stat/KPI Cards with elevated visual hierarchy and NO pills */}
+      {/* 4 Stat/KPI Cards */}
       <section className={styles.statsRow}>
         <div className={styles.kpiCard}>
           <div className={styles.kpiTop}>
             <div className={styles.kpiLabelGroup}>
-              <div className={`${styles.kpiIconBox} ${styles.iconViolet}`}>
-                <Wallet size={18} strokeWidth={2.5} />
+              <div className={styles.kpiIconBox}>
+                <Wallet size={17} strokeWidth={2.2} />
               </div>
               <span className={styles.kpiLabel}>Balance (IDR)</span>
             </div>
@@ -270,8 +249,8 @@ export default function DashboardClient({ username, initial, greeting, balance, 
         <div className={styles.kpiCard}>
           <div className={styles.kpiTop}>
             <div className={styles.kpiLabelGroup}>
-              <div className={`${styles.kpiIconBox} ${styles.iconBlue}`}>
-                <ClipboardList size={18} strokeWidth={2.5} />
+              <div className={styles.kpiIconBox}>
+                <ClipboardList size={17} strokeWidth={2.2} />
               </div>
               <span className={styles.kpiLabel}>Assignments Due</span>
             </div>
@@ -279,7 +258,7 @@ export default function DashboardClient({ username, initial, greeting, balance, 
           <div className={styles.kpiValue}>{assignments.length}</div>
           <div className={styles.kpiFooter}>
             <div style={{ width: '100%', backgroundColor: 'var(--surface-input)', height: '4px', borderRadius: '2px', overflow: 'hidden' }}>
-              <div style={{ width: '40%', backgroundColor: '#3B82F6', height: '100%' }}></div>
+              <div style={{ width: '40%', backgroundColor: 'var(--text-primary)', height: '100%' }}></div>
             </div>
           </div>
         </div>
@@ -287,8 +266,8 @@ export default function DashboardClient({ username, initial, greeting, balance, 
         <div className={styles.kpiCard}>
           <div className={styles.kpiTop}>
             <div className={styles.kpiLabelGroup}>
-              <div className={`${styles.kpiIconBox} ${styles.iconAmber}`}>
-                <Calendar size={18} strokeWidth={2.5} />
+              <div className={styles.kpiIconBox}>
+                <Calendar size={17} strokeWidth={2.2} />
               </div>
               <span className={styles.kpiLabel}>Today&apos;s Classes</span>
             </div>
@@ -304,8 +283,8 @@ export default function DashboardClient({ username, initial, greeting, balance, 
         <div className={`${styles.kpiCard} ${styles.timerCard}`}>
           <div className={styles.kpiTop}>
             <div className={styles.kpiLabelGroup}>
-              <div className={`${styles.kpiIconBox} ${styles.iconEmerald}`}>
-                <Clock size={18} strokeWidth={2.5} />
+              <div className={styles.kpiIconBox}>
+                <Clock size={17} strokeWidth={2.2} />
               </div>
               <span className={styles.kpiLabel}>Focus Timer</span>
             </div>
@@ -360,14 +339,14 @@ export default function DashboardClient({ username, initial, greeting, balance, 
         </div>
       </section>
 
-      {/* Main Content Workspace Grid */}
+      {/* Main Content Workspace Grid - 3 columns side-by-side */}
       <section className={styles.dashboardGrid}>
         {/* Assignments Card */}
-        <div className={`${styles.gridCard} ${styles.cardTintBlue}`}>
+        <div className={styles.gridCard}>
           <div className={styles.cardHeader}>
             <div className={styles.cardTitleRow}>
-              <div className={`${styles.kpiIconBox} ${styles.iconBlue}`}>
-                <ClipboardList size={18} strokeWidth={2.5} />
+              <div className={styles.kpiIconBox}>
+                <ClipboardList size={16} strokeWidth={2.2} />
               </div>
               <h2 className={styles.cardTitle}>Upcoming assignments</h2>
             </div>
@@ -383,11 +362,10 @@ export default function DashboardClient({ username, initial, greeting, balance, 
                     <div className={styles.itemTitle}>{assign.title}</div>
                     <div className={styles.itemMeta}>{assign.course || assign.course_name} · {assign.due_date ? new Date(assign.due_date).toLocaleDateString() : 'No date'}</div>
                   </div>
-                  <Badge variant={assign.priority?.toLowerCase() || 'medium'}>{assign.priority || 'Medium'}</Badge>
                 </div>
               ))
             ) : (
-              <div className="text-secondary" style={{ textAlign: 'center', padding: 'var(--space-24) 0', fontSize: '14px' }}>
+              <div className={styles.emptyList}>
                 No upcoming assignments.
               </div>
             )}
@@ -395,11 +373,11 @@ export default function DashboardClient({ username, initial, greeting, balance, 
         </div>
 
         {/* Schedule Card */}
-        <div className={`${styles.gridCard} ${styles.cardTintAmber}`}>
+        <div className={styles.gridCard}>
           <div className={styles.cardHeader}>
             <div className={styles.cardTitleRow}>
-              <div className={`${styles.kpiIconBox} ${styles.iconAmber}`}>
-                <Calendar size={18} strokeWidth={2.5} />
+              <div className={styles.kpiIconBox}>
+                <Calendar size={16} strokeWidth={2.2} />
               </div>
               <h2 className={styles.cardTitle}>Today&apos;s classes</h2>
             </div>
@@ -421,7 +399,7 @@ export default function DashboardClient({ username, initial, greeting, balance, 
                 </div>
               ))
             ) : (
-              <div className="text-secondary" style={{ textAlign: 'center', padding: 'var(--space-24) 0', fontSize: '14px' }}>
+              <div className={styles.emptyList}>
                 No classes scheduled for today.
               </div>
             )}
@@ -429,11 +407,11 @@ export default function DashboardClient({ username, initial, greeting, balance, 
         </div>
 
         {/* Pinned Notes Card */}
-        <div className={`${styles.gridCard} ${styles.cardTintEmerald}`}>
+        <div className={styles.gridCard}>
           <div className={styles.cardHeader}>
             <div className={styles.cardTitleRow}>
-              <div className={`${styles.kpiIconBox} ${styles.iconEmerald}`}>
-                <StickyNote size={18} strokeWidth={2.5} />
+              <div className={styles.kpiIconBox}>
+                <StickyNote size={16} strokeWidth={2.2} />
               </div>
               <h2 className={styles.cardTitle}>Pinned notes</h2>
             </div>
@@ -452,13 +430,14 @@ export default function DashboardClient({ username, initial, greeting, balance, 
                 </div>
               ))
             ) : (
-              <div className="text-secondary" style={{ textAlign: 'center', padding: 'var(--space-24) 0', fontSize: '14px' }}>
+              <div className={styles.emptyList}>
                 No pinned notes.
               </div>
             )}
           </div>
         </div>
       </section>
+
 
       <AssignmentModal 
         isOpen={isAssignmentOpen}
@@ -477,6 +456,6 @@ export default function DashboardClient({ username, initial, greeting, balance, 
         onClose={() => setIsTransactionOpen(false)}
         onSave={handleTransactionSubmit}
       />
-    </>
+    </div>
   );
 }

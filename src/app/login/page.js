@@ -5,21 +5,48 @@ import Link from 'next/link';
 import AuthLayout from '@/components/layout/AuthLayout';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
-import { signIn } from '@/app/auth/actions';
+import { signIn, resendVerification } from '@/app/auth/actions';
 import styles from './page.module.css';
 
 export default function Login() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [email, setEmail] = useState('');
+  const [resendSuccess, setResendSuccess] = useState(false);
 
   async function handleSubmit(formData) {
     setError(null);
+    setNeedsVerification(false);
+    setResendSuccess(false);
     setLoading(true);
+    
+    const submittedEmail = formData.get('email');
+    setEmail(submittedEmail);
+    
     const res = await signIn(formData);
     if (res?.error) {
       setError(res.error);
+      if (res?.needsVerification) {
+        setNeedsVerification(true);
+      }
       setLoading(false);
     }
+  }
+  
+  async function handleResendVerification() {
+    setLoading(true);
+    setError(null);
+    const formData = new FormData();
+    formData.append('email', email);
+    
+    const res = await resendVerification(formData);
+    if (res?.error) {
+      setError(res.error);
+    } else {
+      setResendSuccess(true);
+    }
+    setLoading(false);
   }
 
   return (
@@ -31,6 +58,7 @@ export default function Login() {
 
       <form action={handleSubmit} className={styles.form}>
         {error && <div style={{ color: '#ff4d4f', fontSize: '13px' }}>{error}</div>}
+        {resendSuccess && <div style={{ color: 'var(--accent)', fontSize: '13px' }}>Verification email sent. Please check your inbox.</div>}
         
         <div className={styles.field}>
           <label htmlFor="email" className="text-secondary">Email</label>
@@ -49,6 +77,12 @@ export default function Login() {
         <Button variant="primary" type="submit" className={styles.submitBtn} disabled={loading}>
           {loading ? 'Signing in...' : 'Sign in'}
         </Button>
+        
+        {needsVerification && (
+          <Button variant="secondary" type="button" onClick={handleResendVerification} disabled={loading} style={{ marginTop: '8px', border: '1px solid var(--border)' }}>
+            Resend verification email
+          </Button>
+        )}
       </form>
 
       <div className={styles.footerText}>

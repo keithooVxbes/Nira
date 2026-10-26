@@ -14,7 +14,7 @@ import styles from './page.module.css';
 import cardStyles from '@/components/ui/Card.module.css';
 import TransactionModal from '@/components/cashflow/TransactionModal';
 import SubscriptionModal from './SubscriptionModal';
-import { deleteTransaction, deleteSubscription } from './actions';
+import { deleteTransaction, deleteSubscription, clearAllTransactions } from './actions';
 
 export default function CashflowClient({ transactions, subscriptions, hasError, txError, subError }) {
   const [chartFilter, setChartFilter] = useState('Daily');
@@ -31,6 +31,29 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
   
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  
+  const [showClearAllModal, setShowClearAllModal] = useState(false);
+  const [isClearingAll, setIsClearingAll] = useState(false);
+  const [toastMsg, setToastMsg] = useState('');
+
+  const handleClearAll = async () => {
+    setIsClearingAll(true);
+    setDeleteError('');
+    try {
+      const res = await clearAllTransactions();
+      if (res?.error) {
+        setDeleteError(res.error);
+      } else {
+        setShowClearAllModal(false);
+        setToastMsg('All transactions cleared successfully.');
+        setTimeout(() => setToastMsg(''), 4000);
+      }
+    } catch {
+      setDeleteError('Failed to clear transactions. Please try again.');
+    } finally {
+      setIsClearingAll(false);
+    }
+  };
 
   const isTxEmpty = !transactions || transactions.length === 0;
   const isSubEmpty = !subscriptions || subscriptions.length === 0;
@@ -47,6 +70,17 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
   }
 
   const balance = totalIncome - totalExpense;
+
+  const activeSubsCount = subscriptions ? subscriptions.length : 0;
+  let totalSubsCost = 0;
+  if (subscriptions) {
+    subscriptions.forEach(sub => totalSubsCost += Number(sub.amount));
+  }
+
+  const monthlyBurn = totalExpense > 0 ? totalExpense : totalSubsCost;
+  const runwayText = monthlyBurn > 0 
+    ? `Runway: ${(Math.max(0, balance) / monthlyBurn).toFixed(1)} months burn rate` 
+    : 'Runway: Healthy liquidity';
 
   // Chart calculation
   const chartData = [];
@@ -120,21 +154,22 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
     avgExpense = totalExpense / 6; // Just approx avg across last 6 months 
   }
 
-  const activeSubsCount = subscriptions ? subscriptions.length : 0;
-  
-  // Total Subscriptions Cost
-  let totalSubsCost = 0;
-  if (subscriptions) {
-    subscriptions.forEach(sub => totalSubsCost += Number(sub.amount));
-  }
-
   const actions = (
     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-      <div className={styles.currencySelect}>
-        <select className={styles.select}>
-          <option>IDR (Rp) ▾</option>
-        </select>
-      </div>
+      {!isTxEmpty && (
+        <Button 
+          variant="secondary" 
+          onClick={() => {
+            setDeleteError('');
+            setShowClearAllModal(true);
+          }}
+          style={{ color: '#DC2626', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+          title="Reset and clear all transactions"
+        >
+          <Trash2 size={16} strokeWidth={2} />
+          Reset All
+        </Button>
+      )}
       <Button variant="primary" onClick={() => {
         setEditingTransaction(null);
         setIsTransactionOpen(true);
@@ -203,7 +238,7 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
   };
 
   return (
-    <>
+    <div className={styles.cashflowContainer}>
       <Header 
         title="Cashflow Analytics"
         subtitle="Manage liquidity, track expenses and monitor subscriptions"
@@ -221,8 +256,8 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
         <div className={cardStyles.kpiCard}>
           <div className={cardStyles.kpiTop}>
             <div className={cardStyles.kpiLabelGroup}>
-              <div className={`${cardStyles.kpiIconBox} ${cardStyles.iconViolet}`}>
-                <Wallet size={18} strokeWidth={2.5} />
+              <div className={cardStyles.kpiIconBox}>
+                <Wallet size={17} strokeWidth={2.2} />
               </div>
               <span className={cardStyles.kpiLabel}>Net Liquidity</span>
             </div>
@@ -236,8 +271,8 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
         <div className={cardStyles.kpiCard}>
           <div className={cardStyles.kpiTop}>
             <div className={cardStyles.kpiLabelGroup}>
-              <div className={`${cardStyles.kpiIconBox} ${cardStyles.iconEmerald}`}>
-                <ArrowUpRight size={18} strokeWidth={2.5} />
+              <div className={cardStyles.kpiIconBox}>
+                <ArrowUpRight size={17} strokeWidth={2.2} />
               </div>
               <span className={cardStyles.kpiLabel}>Total Income</span>
             </div>
@@ -251,8 +286,8 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
         <div className={cardStyles.kpiCard}>
           <div className={cardStyles.kpiTop}>
             <div className={cardStyles.kpiLabelGroup}>
-              <div className={`${cardStyles.kpiIconBox} ${cardStyles.iconRose}`}>
-                <ArrowDownRight size={18} strokeWidth={2.5} />
+              <div className={cardStyles.kpiIconBox}>
+                <ArrowDownRight size={17} strokeWidth={2.2} />
               </div>
               <span className={cardStyles.kpiLabel}>Total Spent</span>
             </div>
@@ -266,8 +301,8 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
         <div className={cardStyles.kpiCard}>
           <div className={cardStyles.kpiTop}>
             <div className={cardStyles.kpiLabelGroup}>
-              <div className={`${cardStyles.kpiIconBox} ${cardStyles.iconAmber}`}>
-                <Repeat size={18} strokeWidth={2.5} />
+              <div className={cardStyles.kpiIconBox}>
+                <Repeat size={17} strokeWidth={2.2} />
               </div>
               <span className={cardStyles.kpiLabel}>Active Subscriptions</span>
             </div>
@@ -281,43 +316,55 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
 
       {/* Middle Analytics Row */}
       <div className={styles.bottomRow}>
-        <div className={styles.transactionsCard} style={{ flex: 2, marginBottom: 'var(--space-24)' }}>
-          <div className={styles.chartHeader}>
+        <div className={styles.chartCard}>
+          <div className={styles.cardHeader}>
             <div className={styles.cardTitleRow}>
-              <div className={`${cardStyles.kpiIconBox} ${cardStyles.iconViolet}`}>
-                <TrendingDown size={18} strokeWidth={2.5} />
+              <div className={cardStyles.kpiIconBox}>
+                <TrendingDown size={17} strokeWidth={2.2} />
               </div>
-              <h2 className={styles.cardTitle}>Daily Spending Flow</h2>
+              <h2 className={styles.cardTitle}>{chartFilter} Spending Flow</h2>
             </div>
             <div className={styles.monthSelector}>
-              <span 
-                className={styles.monthText} 
-                style={{ fontWeight: chartFilter === 'Daily' ? '600' : 'normal', color: chartFilter === 'Daily' ? 'var(--text-primary)' : 'var(--text-tertiary)', cursor: 'pointer' }}
+              <button 
+                type="button"
+                className={`${styles.monthBtn} ${chartFilter === 'Daily' ? styles.monthBtnActive : ''}`} 
                 onClick={() => setChartFilter('Daily')}
-              >Daily</span>
-              <span className={styles.monthText} style={{ color: 'var(--text-tertiary)', fontWeight: 'normal' }}>|</span>
-              <span 
-                className={styles.monthText} 
-                style={{ fontWeight: chartFilter === 'Weekly' ? '600' : 'normal', color: chartFilter === 'Weekly' ? 'var(--text-primary)' : 'var(--text-tertiary)', cursor: 'pointer' }}
+              >
+                Daily
+              </button>
+              <button 
+                type="button"
+                className={`${styles.monthBtn} ${chartFilter === 'Weekly' ? styles.monthBtnActive : ''}`} 
                 onClick={() => setChartFilter('Weekly')}
-              >Weekly</span>
-              <span className={styles.monthText} style={{ color: 'var(--text-tertiary)', fontWeight: 'normal' }}>|</span>
-              <span 
-                className={styles.monthText} 
-                style={{ fontWeight: chartFilter === 'Monthly' ? '600' : 'normal', color: chartFilter === 'Monthly' ? 'var(--text-primary)' : 'var(--text-tertiary)', cursor: 'pointer' }}
+              >
+                Weekly
+              </button>
+              <button 
+                type="button"
+                className={`${styles.monthBtn} ${chartFilter === 'Monthly' ? styles.monthBtnActive : ''}`} 
                 onClick={() => setChartFilter('Monthly')}
-              >Monthly</span>
+              >
+                Monthly
+              </button>
             </div>
           </div>
 
           <div className={styles.chartSummary}>
             <div>
-              <div className="text-secondary" style={{ fontSize: '13px', marginBottom: '4px' }}>Average / {chartFilter.toLowerCase().replace('ly','')}</div>
-              <div style={{ fontSize: '24px', fontWeight: '700' }}>{avgExpense.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+              <div className={styles.summaryLabel}>
+                Average / {chartFilter === 'Daily' ? 'day' : chartFilter === 'Weekly' ? 'week' : 'month'}
+              </div>
+              <div className={styles.summaryValue}>
+                {avgExpense.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              </div>
             </div>
             <div>
-              <div className="text-secondary" style={{ fontSize: '13px', marginBottom: '4px' }}>Peak {chartFilter.toLowerCase().replace('ly','')}</div>
-              <div style={{ fontSize: '24px', fontWeight: '700' }}>{maxExpense.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+              <div className={styles.summaryLabel}>
+                Peak {chartFilter === 'Daily' ? 'day' : chartFilter === 'Weekly' ? 'week' : 'month'}
+              </div>
+              <div className={styles.summaryValue}>
+                {maxExpense.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              </div>
             </div>
           </div>
 
@@ -358,7 +405,7 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
                       title={`${data.tooltip}: ${data.total.toLocaleString()}`}
                     ></div>
                     {showLabel && (
-                      <span className={styles.xLabel} style={{ fontSize: chartFilter === 'Daily' ? '12px' : '10px', marginTop: '8px' }}>
+                      <span className={styles.xLabel}>
                         {data.label}
                       </span>
                     )}
@@ -369,27 +416,32 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
           </div>
         </div>
 
-        <div className={styles.subscriptionsCard} style={{ flex: 1, marginBottom: 'var(--space-24)' }}>
-          <div className={styles.cardHeader} style={{ marginBottom: '16px' }}>
+        <div className={styles.subscriptionsCard}>
+          <div className={styles.cardHeader}>
             <div className={styles.cardTitleRow}>
-              <div className={`${cardStyles.kpiIconBox} ${cardStyles.iconEmerald}`}>
-                <RefreshCw size={18} strokeWidth={2.5} />
+              <div className={cardStyles.kpiIconBox}>
+                <RefreshCw size={17} strokeWidth={2.2} />
               </div>
               <h2 className={styles.cardTitle}>Subscriptions Hub</h2>
             </div>
-            <button type="button" className={styles.link} onClick={() => { setEditingSub(null); setIsSubModalOpen(true); }}>
-              + Add
+            <button 
+              type="button" 
+              className={styles.addBtn} 
+              onClick={() => { setEditingSub(null); setIsSubModalOpen(true); }}
+            >
+              <Plus size={13} strokeWidth={2.2} />
+              Add
             </button>
           </div>
           
-          <div style={{ marginBottom: '20px' }}>
-             <Badge variant="chip" style={{ width: '100%', justifyContent: 'center', padding: '8px' }}>
-                Runway: 5.2 months burn rate
+          <div style={{ marginBottom: '14px' }}>
+             <Badge variant="chip" style={{ width: '100%', justifyContent: 'center', padding: '6px 12px', fontSize: '12px' }}>
+                {runwayText}
              </Badge>
           </div>
           
           {isSubEmpty ? (
-            <div className="text-secondary" style={{ textAlign: 'center', padding: 'var(--space-24) 0' }}>
+            <div className="text-secondary" style={{ textAlign: 'center', padding: 'var(--space-24) 0', fontSize: '13px' }}>
               No subscriptions added.
             </div>
           ) : (
@@ -401,17 +453,16 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
                     <div className="text-secondary" style={{ fontSize: '12px' }}>{Number(sub.amount).toLocaleString('en-US')} IDR/mo</div>
                   </div>
                   
-                  <div className={styles.subDate}>
+                  <div className={styles.subRight}>
                     <Badge variant="pill">{new Date(sub.billing_date).toLocaleDateString('en-GB')}</Badge>
-                  </div>
-                  
-                  <div className={styles.subActions}>
-                    <button onClick={() => { setEditingSub(sub); setIsSubModalOpen(true); }} className={styles.subActionBtn} title="Edit">
-                      <Edit size={14} />
-                    </button>
-                    <button onClick={() => setDeletingSub(sub)} className={`${styles.subActionBtn} ${styles.subActionBtnDanger}`} title="Delete">
-                      <Trash2 size={14} />
-                    </button>
+                    <div className={styles.subActions}>
+                      <button onClick={() => { setEditingSub(sub); setIsSubModalOpen(true); }} className={styles.subActionBtn} title="Edit">
+                        <Edit size={13} />
+                      </button>
+                      <button onClick={() => setDeletingSub(sub)} className={`${styles.subActionBtn} ${styles.subActionBtnDanger}`} title="Delete">
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -420,14 +471,14 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
         </div>
       </div>
 
-      {/* Bottom Section - Ledger Feed */}
-      <div className={styles.transactionsCard}>
+      {/* Bottom Section - Recent Transactions */}
+      <div className={styles.recentTxCard}>
         <div className={styles.cardHeader}>
           <div className={styles.cardTitleRow}>
-            <div className={`${cardStyles.kpiIconBox} ${cardStyles.iconBlue}`}>
-              <CreditCard size={18} strokeWidth={2.5} />
+            <div className={cardStyles.kpiIconBox}>
+              <CreditCard size={17} strokeWidth={2.2} />
             </div>
-            <h2 className={styles.cardTitle}>Ledger Feed</h2>
+            <h2 className={styles.cardTitle}>Recent Transactions</h2>
           </div>
           <div className={styles.filterChips}>
             <div className={styles.searchBox}>
@@ -595,6 +646,57 @@ export default function CashflowClient({ transactions, subscriptions, hasError, 
           </div>
         </div>
       )}
-    </>
+
+      {showClearAllModal && (
+        <div 
+          style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)' }} 
+          onClick={() => { if (!isClearingAll) setShowClearAllModal(false); }}
+        >
+          <div 
+            style={{ backgroundColor: 'var(--surface)', padding: 'var(--space-24)', borderRadius: '16px', width: '90%', maxWidth: '420px', boxShadow: 'var(--shadow-lg)' }} 
+            onClick={e => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#FEE2E2', color: '#DC2626', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Trash2 size={20} />
+              </div>
+              <h3 style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>Reset All Transactions?</h3>
+            </div>
+            
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', lineHeight: 1.5, fontSize: '14px' }}>
+              Are you sure you want to delete all <strong style={{ color: 'var(--text-primary)' }}>{transactions?.length || 0}</strong> transactions? 
+              This will reset your cashflow balance, spending calculations, and recent transactions. This action cannot be undone.
+            </p>
+
+            {deleteError && (
+              <div style={{ backgroundColor: '#FEE2E2', color: '#DC2626', padding: '12px', borderRadius: '8px', marginBottom: '16px', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <AlertCircle size={16} />
+                <span>{deleteError}</span>
+              </div>
+            )}
+            
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <Button variant="secondary" onClick={() => setShowClearAllModal(false)} disabled={isClearingAll}>
+                Cancel
+              </Button>
+              <Button 
+                variant="primary" 
+                style={{ backgroundColor: '#DC2626', borderColor: '#DC2626' }}
+                disabled={isClearingAll}
+                onClick={handleClearAll}
+              >
+                {isClearingAll ? 'Clearing...' : 'Clear All'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {toastMsg && (
+        <div style={{ position: 'fixed', bottom: '24px', right: '24px', background: 'var(--text-primary)', color: 'var(--surface)', padding: '12px 20px', borderRadius: '10px', zIndex: 1100, boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px' }}>
+          <span>{toastMsg}</span>
+        </div>
+      )}
+    </div>
   );
 }

@@ -1,0 +1,23 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin-bottom: var(--space-16);
+  text-align: center;
+}
+
+.backToLogin {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-16);
+}
+
+.accentLink {
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.accentLink:hover {
+  text-decoration: underline;
+}
