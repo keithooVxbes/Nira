@@ -1,7 +1,7 @@
 import { createClient } from '@/utils/supabase/server';
 import AppShell from '@/components/layout/AppShell';
 import DashboardClient from './DashboardClient';
-import { getBalanceSummary, getUpcomingAssignments, getTodayClasses, getPinnedNotes, getActiveFocusSession } from './actions';
+import { getBalanceSummary, getUpcomingAssignments, getTodayClasses, getPinnedNotes } from './actions';
 
 export default async function Dashboard() {
   const supabase = await createClient();
@@ -18,14 +18,12 @@ export default async function Dashboard() {
     { balance, error: balanceError },
     { data: assignments, error: assignmentsError },
     { data: classes, error: classesError },
-    { data: notes, error: notesError },
-    { data: activeFocusSession }
+    { data: notes, error: notesError }
   ] = await Promise.all([
     getBalanceSummary(),
     getUpcomingAssignments(),
     getTodayClasses(),
-    getPinnedNotes(),
-    getActiveFocusSession()
+    getPinnedNotes()
   ]);
 
   return (
@@ -38,7 +36,6 @@ export default async function Dashboard() {
         assignments={assignments || []}
         classes={classes || []}
         notes={notes || []}
-        activeFocusSession={activeFocusSession}
       />
     </AppShell>
   );

@@ -258,41 +258,51 @@
   gap: 12px;
 }
 
-.timerModeGroup {
-  display: inline-flex;
+.timerDurationRow {
+  display: flex;
   align-items: center;
-  gap: 2px;
-  background-color: var(--surface-alt);
-  padding: 2px 4px;
-  border-radius: var(--radius-full);
-  border: 1px solid rgba(223, 217, 209, 0.6);
-  width: fit-content;
+  gap: 4px;
   margin-bottom: 8px;
 }
 
-.timerModeChip {
-  padding: 3px 10px;
-  font-size: 11px;
+.timerDurationInput {
+  width: 48px;
+  padding: 3px 8px;
+  font-size: 12px;
   font-weight: 500;
-  border-radius: var(--radius-full);
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.15s ease;
   font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--text-primary);
+  background-color: var(--surface-alt);
+  border: 1px solid rgba(223, 217, 209, 0.6);
+  border-radius: var(--radius-full);
   line-height: 1.2;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  appearance: textfield;
+  -moz-appearance: textfield;
 }
 
-.timerModeChip:hover {
-  color: var(--text-primary);
+.timerDurationInput::-webkit-inner-spin-button,
+.timerDurationInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-.timerModeChipActive {
-  background-color: var(--surface);
-  color: var(--text-primary);
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(25, 25, 27, 0.08);
+.timerDurationInput:focus {
+  outline: none;
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 2px rgba(25, 25, 27, 0.08);
+}
+
+.timerDurationInput:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.timerUnit {
+  font-size: 11px;
+  color: var(--text-secondary);
 }
 
 .timerDisplay {

@@ -1,5 +1,6 @@
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { FocusTimerProvider } from "@/components/focus/FocusTimerProvider";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -17,7 +18,9 @@ export const dynamic = 'force-dynamic';
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={plusJakartaSans.className}>{children}</body>
+      <body className={plusJakartaSans.className}>
+        <FocusTimerProvider>{children}</FocusTimerProvider>
+      </body>
     </html>
   );
 }
