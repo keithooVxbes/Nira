@@ -7,17 +7,29 @@ import ProfileMenu from '@/components/profile/ProfileMenu';
 import EditProfileModal from '@/components/profile/EditProfileModal';
 import styles from './Sidebar.module.css';
 
-export default function SidebarClient({ initial, username, email }) {
+export default function SidebarClient({ initial, username, fullName, bio, avatarUrl, email }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [profile, setProfile] = useState({
-    username: username,
-    fullName: username,
-    email: email,
-    initial: initial,
-    bio: '',
-    avatarUrl: ''
+    username: username || '',
+    fullName: fullName || username || '',
+    email: email || '',
+    initial: initial || 'U',
+    bio: bio || '',
+    avatarUrl: avatarUrl || ''
   });
+
+  useEffect(() => {
+    setProfile(prev => ({
+      ...prev,
+      username: username || prev.username,
+      fullName: fullName || username || prev.fullName,
+      email: email || prev.email,
+      initial: initial || prev.initial,
+      bio: bio !== undefined ? bio : prev.bio,
+      avatarUrl: avatarUrl !== undefined ? avatarUrl : prev.avatarUrl,
+    }));
+  }, [initial, username, fullName, bio, avatarUrl, email]);
 
   useEffect(() => {
     const handleResize = () => {

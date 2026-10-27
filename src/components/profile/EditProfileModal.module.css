@@ -105,6 +105,12 @@
   gap: var(--space-8);
 }
 
+.avatarBtnGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
 .uploadBtn {
   font-size: 13px;
   font-weight: 500;
@@ -119,6 +125,22 @@
 
 .uploadBtn:hover {
   background: var(--surface-alt);
+}
+
+.removeBtn {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--danger);
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  padding: 6px 12px;
+  border-radius: var(--radius-8);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.removeBtn:hover {
+  background: #FEF2F2;
 }
 
 .formGroup {

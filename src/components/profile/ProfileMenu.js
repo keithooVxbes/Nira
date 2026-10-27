@@ -5,7 +5,12 @@ import styles from './ProfileMenu.module.css';
 
 export default function ProfileMenu({ profile, onOpenEditProfile, isCollapsed }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const menuRef = useRef(null);
+
+  useEffect(() => {
+    setImageError(false);
+  }, [profile.avatarUrl]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -36,6 +41,8 @@ export default function ProfileMenu({ profile, onOpenEditProfile, isCollapsed })
     onOpenEditProfile();
   };
 
+  const displayName = profile.fullName || profile.username || 'User';
+
   return (
     <div className={styles.profileMenuContainer} ref={menuRef}>
       <button 
@@ -44,15 +51,20 @@ export default function ProfileMenu({ profile, onOpenEditProfile, isCollapsed })
         aria-label="Profile menu"
       >
         <div className={styles.avatar}>
-          {profile.avatarUrl ? (
-            <img src={profile.avatarUrl} alt="Avatar" className={styles.avatarImage} />
+          {profile.avatarUrl && !imageError ? (
+            <img 
+              src={profile.avatarUrl} 
+              alt={displayName} 
+              className={styles.avatarImage} 
+              onError={() => setImageError(true)} 
+            />
           ) : (
             profile.initial || 'U'
           )}
         </div>
         {!isCollapsed && (
           <div className={styles.profileInfo}>
-            <span className={styles.username}>{profile.username}</span>
+            <span className={styles.username}>{displayName}</span>
             <span className={styles.userRole}>Active Workspace</span>
           </div>
         )}
@@ -62,14 +74,19 @@ export default function ProfileMenu({ profile, onOpenEditProfile, isCollapsed })
         <div className={styles.dropdownMenu}>
           <div className={styles.menuHeader}>
             <div className={`${styles.avatar} ${styles.menuAvatar}`}>
-              {profile.avatarUrl ? (
-                <img src={profile.avatarUrl} alt="Avatar" className={styles.avatarImage} />
+              {profile.avatarUrl && !imageError ? (
+                <img 
+                  src={profile.avatarUrl} 
+                  alt={displayName} 
+                  className={styles.avatarImage} 
+                  onError={() => setImageError(true)} 
+                />
               ) : (
                 profile.initial || 'U'
               )}
             </div>
             <div className={styles.profileInfo}>
-              <span className={styles.username}>{profile.username}</span>
+              <span className={styles.username}>{displayName}</span>
               <span className={styles.userRole}>Active Workspace</span>
             </div>
           </div>

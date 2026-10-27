@@ -129,3 +129,124 @@ export async function resendVerification(formData) {
 
   return { success: true }
 }
+
+export async function updateProfile(formData) {
+  const supabase = await createClient()
+  const { data: { user }, error: authErr } = await supabase.auth.getUser()
+
+  if (authErr || !user) {
+    return { error: 'Unauthorized. Please log in.' }
+  }
+
+  const fullName = formData.get('fullName')?.toString().trim()
+  const username = formData.get('username')?.toString().trim()
+  const bio = formData.get('bio')?.toString().trim() || ''
+  const removeAvatar = formData.get('removeAvatar') === 'true'
+  const avatarFile = formData.get('avatar')
+
+  if (!fullName || !username) {
+    return { error: 'Full Name and Username are required.' }
+  }
+
+  let currentAvatarUrl = user.user_metadata?.avatar_url || ''
+  let newAvatarUrl = currentAvatarUrl
+
+  const possibleExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif']
+  const removePaths = possibleExtensions.map(ext => `${user.id}/avatar.${ext}`)
+
+  if (removeAvatar) {
+    await supabase.storage.from('avatars').remove(removePaths).catch(() => {})
+    await supabase.storage.from('receipts').remove(removePaths).catch(() => {})
+    newAvatarUrl = ''
+  } else if (avatarFile && avatarFile instanceof File && avatarFile.size > 0) {
+    const validMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+    if (!validMimes.includes(avatarFile.type)) {
+      return { error: 'Please upload a valid JPG, PNG, GIF, or WebP image.' }
+    }
+    if (avatarFile.size > 5 * 1024 * 1024) {
+      return { error: 'Avatar image must be smaller than 5MB.' }
+    }
+
+    const rawExt = avatarFile.type.split('/')[1]?.toLowerCase() || 'jpg'
+    const ext = rawExt === 'jpeg' ? 'jpg' : rawExt
+    const filePath = `${user.id}/avatar.${ext}`
+    const buffer = Buffer.from(await avatarFile.arrayBuffer())
+
+    // Try 'avatars' bucket first, fallback to 'receipts'
+    let uploadSuccess = false
+    const { error: avatarsErr } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, buffer, {
+        contentType: avatarFile.type,
+        upsert: true,
+      })
+
+    if (!avatarsErr) {
+      uploadSuccess = true
+    } else {
+      const { error: receiptsErr } = await supabase.storage
+        .from('receipts')
+        .upload(filePath, buffer, {
+          contentType: avatarFile.type,
+          upsert: true,
+        })
+
+      if (!receiptsErr) {
+        uploadSuccess = true
+      } else {
+        console.error('Storage upload failed:', avatarsErr, receiptsErr)
+        return { error: 'Failed to upload photo. Please try again.' }
+      }
+    }
+
+    if (uploadSuccess) {
+      // Remove other extensions to prevent conflicts
+      const oldPaths = possibleExtensions
+        .filter(e => e !== ext)
+        .map(e => `${user.id}/avatar.${e}`)
+      await supabase.storage.from('avatars').remove(oldPaths).catch(() => {})
+      await supabase.storage.from('receipts').remove(oldPaths).catch(() => {})
+
+      newAvatarUrl = `/api/user/avatar?t=${Date.now()}`
+    }
+  }
+
+  // Update Supabase Auth user metadata
+  const { error: updateErr } = await supabase.auth.updateUser({
+    data: {
+      username,
+      full_name: fullName,
+      bio,
+      avatar_url: newAvatarUrl,
+    }
+  })
+
+  if (updateErr) {
+    return { error: updateErr.message }
+  }
+
+  // Also update public.profiles table username if it exists
+  try {
+    await supabase
+      .from('profiles')
+      .update({ username })
+      .eq('user_id', user.id)
+  } catch (err) {
+    console.warn('Could not update profiles table username:', err)
+  }
+
+  revalidatePath('/', 'layout')
+
+  return {
+    success: true,
+    profile: {
+      username,
+      fullName,
+      bio,
+      avatarUrl: newAvatarUrl,
+      initial: (fullName || username).charAt(0).toUpperCase(),
+      email: user.email,
+    }
+  }
+}
+
